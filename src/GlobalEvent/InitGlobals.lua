@@ -13,11 +13,12 @@ do
 		perebor = CreateGroup() --1 едиснвенная глобальная группа на всю игру, никакие Destroy Привет гуишники
 		--InitSpellTrigger() -- Инициализация функции кастов
 		InitHEROTable() -- Инициализация таблицы героев
-		--KeyRegistration() -- инициализация отлова нажатия клавиш
+		KeyRegistration() -- инициализация отлова нажатия клавиш
 		InitSelectionRegister() -- инициализация выбора
 		InitMouseMoveTrigger() -- Запуск отслеживания положения мыши
 		--InitSoundsA()--Создаём звуки
 		--InitUnitDeath()-- инициализация смерти
+		CreateGlue()
 	end
 
 end
@@ -29,14 +30,40 @@ do
 		PauseTimer(whichTimer)
 		DestroyTimer_Original(whichTimer)
 	end
+
 end
 
 function InitHEROTable()
+	EnableDragSelect(false,false)
+
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		HERO[i] = {
 			pid = i,
 			UnitHero = nil,
+			IsInterface=false,
+			IsMainHeroOnHit=false,
 		}
 	end
+end
+
+function CreateGlue()
+	local next=NextPoint
+	local  buttonFrame = BlzCreateFrameByType("GLUEBUTTON", "FaceButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+	local  buttonIconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", buttonFrame, "", 0)
+	BlzFrameSetAllPoints(buttonIconFrame, buttonFrame)
+	BlzFrameSetTexture(buttonIconFrame, "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, true)
+	BlzFrameSetSize(buttonFrame,next,next)
+	BlzFrameSetAbsPoint(buttonFrame,FRAMEPOINT_CENTER,0.637,0.113)
+	--BlzFrameSetValue(buttonFrame,100)
+	--BlzFrameSetPoint(buttonFrame,FRAMEPOINT_CENTER,BlzGetFrameByName("CommandButton_"..0, 0),FRAMEPOINT_CENTER,0,0)
+	local  this = CreateTrigger()
+	BlzTriggerRegisterFrameEvent(this, buttonFrame, FRAMEEVENT_MOUSE_WHEEL)
+	TriggerAddAction(this, function ()
+		print("scroll"..BlzFrameGetValue(buttonFrame))
+		BlzFrameSetValue(buttonFrame,BlzFrameGetValue(buttonFrame)+1)
+		--BlzFrameGetValue
+	end)
+
+	StarFrameCooldown(nil,10)
 end
 
