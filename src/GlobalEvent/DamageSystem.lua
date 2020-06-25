@@ -9,9 +9,15 @@ function OnPostDamage()
 		--print("Герой получил урон")
 		local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 		if data.CustomAbilities.Q.Ready then
-			print("Есть способность уворот")
+			--print("Есть способность уворот")
 			if not FrameTable[9].OnCD then
 				StarFrameCooldown(FrameTable[9],10)
+				BlzSetEventDamage(0)
+				FlyTextTagMiss(target,"Промах",GetOwningPlayer(target))
+				if IsUnitEnemy(caster,GetOwningPlayer(target)) then
+					FlyTextTagMiss(target,"Промах",GetOwningPlayer(caster))
+				end
+				PhaseEvade(target)
 			else
 				AddSpeedToFrameCD(FrameTable[9],1)
 			end

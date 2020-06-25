@@ -126,17 +126,17 @@ function CreateAbilityFrame(pos,texture,type) -- позиция 1 - 12
 	local  TrigMOUSE_ENTER = CreateTrigger()
 	BlzTriggerRegisterFrameEvent( TrigMOUSE_ENTER, data.SelfFrame, FRAMEEVENT_MOUSE_ENTER)
 	TriggerAddAction( TrigMOUSE_ENTER, function ()
-		print("показать подсказку")
+		--print("показать подсказку")
 		data.MouseOnFrame=true
 		local pid=GetPlayerId(GetTriggerPlayer())
-		print(GetUnitName())
-		CreateVisualMarkerRadius(data,500,HERO[pid].UnitHero)
+		--print(GetUnitName())
+		CreateVisualMarkerRadius(data,250,HERO[pid].UnitHero)
 	end)
 	local  TrigMOUSE_LEAVE = CreateTrigger()
 	BlzTriggerRegisterFrameEvent( TrigMOUSE_LEAVE, data.SelfFrame, FRAMEEVENT_MOUSE_LEAVE)
 	TriggerAddAction( TrigMOUSE_LEAVE, function ()
 		data.MouseOnFrame=false
-		print("убрать подсказку")
+		--print("убрать подсказку")
 	end)
 
 
@@ -162,7 +162,8 @@ function CreateVisualMarkerRadius (data,radius,hero,x,y)
 		print(GetUnitName(hero))
 		--x,y=GetUnitXY(hero)
 	end
-	local CircleImage=CreateImage("circle_fill",radius,radius,radius,OutPoint,OutPoint,0,0,0,0,4)
+	-- circle_fill
+	local CircleImage=CreateImage("circ",radius,radius,radius,OutPoint,OutPoint,0,0,0,0,4)
 	SetImageRenderAlways(CircleImage, true)
 	ShowImage(CircleImage,false)
 

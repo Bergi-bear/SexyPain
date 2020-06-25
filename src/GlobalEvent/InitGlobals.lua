@@ -58,6 +58,7 @@ function InitHEROTable()
 				D={},
 				F={}
 			},
+
 		}
 	end
 end
