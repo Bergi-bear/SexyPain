@@ -16,7 +16,7 @@ do
 		KeyRegistration() -- инициализация отлова нажатия клавиш
 		InitSelectionRegister() -- инициализация выбора
 		InitMouseMoveTrigger() -- Запуск отслеживания положения мыши
-
+		InitDamage()
 		--InitSoundsA()--Создаём звуки
 		--InitUnitDeath()-- инициализация смерти
 		--CreateGlue()
@@ -47,6 +47,17 @@ function InitHEROTable()
 			UnitHero = nil,
 			IsInterface=false,
 			IsMainHeroOnHit=false,
+			CustomAbilities={
+				Q={
+					Ready=true,
+				},
+				W={},
+				E={},
+				R={},
+				S={},
+				D={},
+				F={}
+			},
 		}
 	end
 end
@@ -73,6 +84,7 @@ function InitMainFrameTable()
 			OnPaused=false,
 			Full=0,
 			CurrentCD=0,
+			MouseOnFrame=false,
 		}
 		local data=FrameTable[i]
 		k=k+1

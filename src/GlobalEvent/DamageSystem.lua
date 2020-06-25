@@ -1,3 +1,38 @@
+function OnPostDamage()
+	local damage     = GetEventDamage() -- число урона
+	local damageType = BlzGetEventDamageType()
+	if damage < 1 then return end
+	local target= GetTriggerUnit() -- тот кто получил урон
+	local caster= GetEventDamageSource() -- тот кто нанёс урон
+
+	if IsUnitType(target,UNIT_TYPE_HERO) then
+		--print("Герой получил урон")
+		local data=HERO[GetPlayerId(GetOwningPlayer(target))]
+		if data.CustomAbilities.Q.Ready then
+			print("Есть способность уворот")
+			if not FrameTable[9].OnCD then
+				StarFrameCooldown(FrameTable[9],10)
+			else
+				AddSpeedToFrameCD(FrameTable[9],1)
+			end
+		end
+	end
+	--любой получил урон
+
+end
+
+
+function InitDamage()
+	local DamageTrigger = CreateTrigger()
+	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
+		--TriggerRegisterPlayerUnitEvent(DamageTrigger, Player(i), EVENT_PLAYER_UNIT_DAMAGING) -- До вычета брони
+		TriggerRegisterPlayerUnitEvent(DamageTrigger, Player(i), EVENT_PLAYER_UNIT_DAMAGED) -- После вычета брони
+	end
+	TriggerAddAction(DamageTrigger, OnPostDamage)
+end
+
+
+
 function UnitDamageArea(u,damage,x,y,range,ZDamageSource,EffectModel)
 	local isdamage=false
 	local e=nil

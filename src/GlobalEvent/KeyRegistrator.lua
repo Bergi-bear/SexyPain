@@ -215,8 +215,8 @@ function InitSelectionRegister()
 		if IsUnitType(hero, UNIT_TYPE_HERO) and GetOwningPlayer(hero) == GetTriggerPlayer() and GetUnitTypeId(hero) == HeroID then
 			if not data.UnitHero then --первый выбор героя
 				data.UnitHero = hero
-				CreateAbilityFrame(5)
-				CreateAbilityFrame(8)
+				--CreateAbilityFrame(5)
+				CreateAbilityFrame(9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive")
 				TimerStart(CreateTimer(), 0.01, true, function()
 					local u = GetMainSelectedUnit(GetSelectedUnitIndex())
 					if u==data.UnitHero then
@@ -245,4 +245,3 @@ function InitSelectionRegister()
 
 	end)
 end
-
