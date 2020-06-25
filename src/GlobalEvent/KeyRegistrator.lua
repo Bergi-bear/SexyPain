@@ -22,8 +22,9 @@ function KeyRegistration()
 			data.ReleaseLMB = true
 			if data.IsMainHeroOnHit then
 				--print("123")
-				if not data.IsInterface then
-					print("SetInterfaceToQuinOfPaint".." через более быстрый выбор")
+				if not data.IsInterface and data.UnitHero then
+				--	print("SetInterfaceToQuinOfPaint".." через более быстрый выбор")
+					--print(111)
 					ChangeInterfaceToQuin(data)
 					data.IsInterface=true
 				end
@@ -173,6 +174,7 @@ function KeyRegistration()
 		local data = HERO[pid]
 		local u = GetMainSelectedUnit(GetSelectedUnitIndex())
 		if u==data.UnitHero then
+			--print(222)
 			ChangeInterfaceToQuin(data)
 		else
 			--print("юнит не выбран через TAB")
@@ -211,11 +213,14 @@ function InitSelectionRegister()
 		local data = HERO[GetPlayerId(GetTriggerPlayer())]
 
 		if IsUnitType(hero, UNIT_TYPE_HERO) and GetOwningPlayer(hero) == GetTriggerPlayer() and GetUnitTypeId(hero) == HeroID then
-			if not data.UnitHero then
+			if not data.UnitHero then --первый выбор героя
 				data.UnitHero = hero
+				CreateAbilityFrame(5)
+				CreateAbilityFrame(8)
 				TimerStart(CreateTimer(), 0.01, true, function()
 					local u = GetMainSelectedUnit(GetSelectedUnitIndex())
 					if u==data.UnitHero then
+						--print(333)
 						ChangeInterfaceToQuin(data)
 					else
 						--print("юнит не выбран")
@@ -226,12 +231,13 @@ function InitSelectionRegister()
 				end)
 			end
 			if not data.IsInterface then
-				print("SetInterfaceToQuinOfPaint")
+				--print("SetInterfaceToQuinOfPaint")
+				--print(444)
 				ChangeInterfaceToQuin(data)
 				data.IsInterface=true
 			end
 		else
-			print("ResetInterfaceToDefault")
+			--print("ResetInterfaceToDefault")
 			ResetInterfaceToDefault(data)
 			data.IsInterface=false
 		end

@@ -23,7 +23,7 @@ function InitMouseMoveTrigger()
 		local id = GetPlayerId(GetTriggerPlayer())
 		if FocusUnit==HERO[id].UnitHero then
 			if not HERO[id].IsMainHeroOnHit then
-				print("Херо он фокус")
+			--	print("Херо он фокус")
 			end
 			HERO[id].IsMainHeroOnHit=true
 		else

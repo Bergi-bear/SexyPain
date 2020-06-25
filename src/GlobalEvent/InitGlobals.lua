@@ -16,9 +16,14 @@ do
 		KeyRegistration() -- инициализация отлова нажатия клавиш
 		InitSelectionRegister() -- инициализация выбора
 		InitMouseMoveTrigger() -- Запуск отслеживания положения мыши
+
 		--InitSoundsA()--Создаём звуки
 		--InitUnitDeath()-- инициализация смерти
-		CreateGlue()
+		--CreateGlue()
+		TimerStart(CreateTimer(), 0, false, function()
+			--Test12FrameAbility()-- фреймы
+			InitMainFrameTable()
+		end)
 	end
 
 end
@@ -46,24 +51,38 @@ function InitHEROTable()
 	end
 end
 
-function CreateGlue()
-	local next=NextPoint
-	local  buttonFrame = BlzCreateFrameByType("GLUEBUTTON", "FaceButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
-	local  buttonIconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", buttonFrame, "", 0)
-	BlzFrameSetAllPoints(buttonIconFrame, buttonFrame)
-	BlzFrameSetTexture(buttonIconFrame, "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, true)
-	BlzFrameSetSize(buttonFrame,next,next)
-	BlzFrameSetAbsPoint(buttonFrame,FRAMEPOINT_CENTER,0.637,0.113)
-	--BlzFrameSetValue(buttonFrame,100)
-	--BlzFrameSetPoint(buttonFrame,FRAMEPOINT_CENTER,BlzGetFrameByName("CommandButton_"..0, 0),FRAMEPOINT_CENTER,0,0)
-	local  this = CreateTrigger()
-	BlzTriggerRegisterFrameEvent(this, buttonFrame, FRAMEEVENT_MOUSE_WHEEL)
-	TriggerAddAction(this, function ()
-		print("scroll"..BlzFrameGetValue(buttonFrame))
-		BlzFrameSetValue(buttonFrame,BlzFrameGetValue(buttonFrame)+1)
-		--BlzFrameGetValue
-	end)
 
-	StarFrameCooldown(nil,10)
+FrameTable={}
+function InitMainFrameTable()
+	--	local frames={}
+	local k=0
+	local k2=1
+	local greed=0.0045
+	for i=1,12 do
+		FrameTable[i]={
+			SelfFrame=nil, -- Основной фрейм
+			IconFrame=nil, -- Его иконка
+			CdIndicatorFrame=nil, -- Фрейм перезарядки
+			Number=i,
+			PosX=0,
+			PosY=0,
+			OnCD=false,
+			CurrentCDTime=0,
+			Timer=nil,
+			PercentAmount=0,
+			OnPaused=false,
+			Full=0,
+			CurrentCD=0,
+		}
+		local data=FrameTable[i]
+		k=k+1
+
+		if k==5 then
+			k=1
+			k2=k2+1
+		end
+		data.PosX=0.637+((NextPoint+greed)*(k-1))
+		data.PosY=0.113-((NextPoint+greed)*(k2-1))
+	end
+	return FrameTable
 end
-
