@@ -3,17 +3,34 @@
 --- Created by Bergi.
 --- DateTime: 29.06.2020 16:21
 ---
-function CreateAbilityToolTip(data)
-	local TT=BlzCreateFrame("DemoBoxTooltip", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
-	BlzFrameSetSize(TT,0.29,0.1)
-	BlzFrameSetAbsPoint(TT,FRAMEPOINT_CENTER,0.655,0.3)
-	local contaiter=BlzFrameGetChild(TT,1)
+function CreateAbilityToolTip(mainData,data)
+	data.ToolTip=BlzCreateFrame("DemoBoxTooltip", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
+	BlzFrameSetSize(data.ToolTip,0.29,0.10)
+	BlzFrameSetAbsPoint(data.ToolTip,FRAMEPOINT_CENTER,0.655,0.25)
+	local contaiter=BlzFrameGetChild(data.ToolTip,1)
 	local title=BlzFrameGetChild(contaiter,0)
 	local description=BlzFrameGetChild(contaiter,1)
-	BlzFrameSetText(title,"Фазовый сдвиг")
-	BlzFrameSetText(description,"При получении урона герой смещается между пространствами и избегает этого урона а также любого последующего в течении 0.5 сек. Атаки по герою уменьшают перезарядку способности на 1 секунду")
-
+	BlzFrameSetText(title,mainData.CustomAbilities[data.HotKeyPos].Name)
+	BlzFrameSetText(description,mainData.CustomAbilities[data.HotKeyPos].Description)
+	BlzFrameSetVisible(data.ToolTip,false)
+	--print(mainData.CustomAbilities[data.HotKeyPos].Name)
 end
-function ShowAbilityTooltip (data,isShow)
+function ShowAbilityTooltip (mainData,data,isShow)
+	if isShow then
+		if GetLocalPlayer()==Player(mainData.pid) then
+			--print(mainData.CustomAbilities[data.HotKeyPos].Name.." Шоу тултип вызван")
+			BlzFrameSetVisible(data.ToolTip,true)
+		end
+	end
 	return isShow
 end
+
+function HideAllToolTips(mainData)
+	--print("способности скрыты")
+	for i=1,12 do
+
+		local data=mainData.FrameTable[i]
+	BlzFrameSetVisible(data.ToolTip,false)
+	end
+end
+

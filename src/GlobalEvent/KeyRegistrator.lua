@@ -55,11 +55,12 @@ function KeyRegistration()
 		local data = HERO[pid]
 		if not data.ReleaseW then
 			data.ReleaseW = true
-			print("кнопка W нажата, нужен огонь")
-			if not data.FrameTable[10].OnCD then
+			--print("кнопка W нажата, нужен огонь")
+			if not data.FrameTable[10].OnCD then --TODO реал реди
 				StarFrameCooldown(data.FrameTable[10],10)
 				data.FirePillarState=true
 				StartFirePillar(data)
+
 			end
 			--MarkCreatorW(data)
 		end
@@ -108,6 +109,13 @@ function KeyRegistration()
 		local data = HERO[pid]
 		if not data.ReleaseE then
 			data.ReleaseE = true
+			if not data.FrameTable[11].OnCD then --
+				--StarFrameCooldown(data.FrameTable[11],10)
+				--data.FirePillarState=true
+				--StartFirePillar(data)
+				EatingCactus(data)
+
+			end
 			--data.MarkIsActivated=false
 			--print("Q is Pressed Mark Creation")
 			--MarkCreatorE(data)
@@ -223,8 +231,11 @@ function InitSelectionRegister()
 			if not data.UnitHero then --первый выбор героя
 				data.UnitHero = hero
 				--CreateAbilityFrame(5)
-				CreateAbilityFrame(data,9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive")
-				CreateAbilityFrame(data,10,"ReplaceableTextures\\CommandButtons\\BTNFireForTheCannon", "active")
+				CreateAbilityFrame(data,9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive",1)
+				CreateAbilityFrame(data,10,"ReplaceableTextures\\CommandButtons\\BTNFireForTheCannon", "active",2)
+				CreateAbilityFrame(data,11,nil, "active",3)
+
+				--CreateAbilityFrame(data,9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive",1)
 				TimerStart(CreateTimer(), 0.01, true, function()
 					local u = GetMainSelectedUnit(GetSelectedUnitIndex())
 					if u==data.UnitHero then

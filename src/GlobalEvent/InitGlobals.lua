@@ -12,15 +12,17 @@ do
 		InitGlobalsOrigin()
 		perebor = CreateGroup() --1 едиснвенная глобальная группа на всю игру, никакие Destroy Привет гуишники
 		--InitSpellTrigger() -- Инициализация функции кастов
-		InitHEROTable() -- Инициализация таблицы героев
+
 		KeyRegistration() -- инициализация отлова нажатия клавиш
 		InitSelectionRegister() -- инициализация выбора
 		InitMouseMoveTrigger() -- Запуск отслеживания положения мыши
 		InitDamage()
+		InitHEROTable() -- Инициализация таблицы героев
 		--InitSoundsA()--Создаём звуки
 		--InitUnitDeath()-- инициализация смерти
 		--CreateGlue()
 		TimerStart(CreateTimer(), 0, false, function()
+
 			--Test12FrameAbility()-- фреймы
 			InitMainFrameTable(HERO[0]) -- мульти создаётся здесь
 		end)
@@ -40,7 +42,10 @@ end
 
 function InitHEROTable()
 	EnableDragSelect(false, false)
-
+	if BlzLoadTOCFile("Main.toc") then
+	else
+		print("ошибка загрузки toc")
+	end
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		HERO[i] = {
 			pid = i,
@@ -49,25 +54,36 @@ function InitHEROTable()
 			IsMainHeroOnHit = false,
 			EvasionState=false,
 			FirePillarState=false,
-			CustomAbilities = {
-				Q = {
+			CustomAbilities = { -- статичные данные, но менять можно и муи
+				[1] = {
 					Ready = true,
 					CD=10,
+					Name="Фазовый сдвиг",
+					Description="\nПри получении урона герой смещается между пространствами и избегает этого урона а также любого последующего в течении 0.5 сек. Атаки по герою уменьшают перезарядку способности на 1 секунду"
 				},
-				W = {
+				[2] = {
 					Ready = true,
 					CD=15,
+					Name="Огненный столб",
+					Description="Выпускает поток огня впереди себя"
 				},
-				E = {},
+				[3] = {
+					Ready = true,
+					CD=7,
+					Name="Поле кактусов",
+					Description="Сажает кактусы в указанной точке, сажайте кактусы по 1 или удерживайте левую кнопку мыши зажатой, для массовм посадки. Способность имеет 10 зарядов, перезарядка заряда - 7 секунд ",
+					MaxCharges=10
+				},
 				R = {},
 				S = {},
 				D = {},
 				F = {}
 			},
-			FrameTable = {
+			FrameTable = {-- создание таблице пустыше
 				SelfFrame = nil, -- Основной фрейм
 				IconFrame = nil, -- Его иконка
 				CdIndicatorFrame = nil, -- Фрейм перезарядки
+				ToolTip=nil, -- фрейм подскизки, общий
 				Number = i,
 				PosX = 0,
 				PosY = 0,
@@ -79,6 +95,7 @@ function InitHEROTable()
 				Full = 0,
 				CurrentCD = 0,
 				MouseOnFrame = false,
+				HotKeyPos=0,
 			},
 			ReleaseQ=false,
 			ReleaseW=false,
@@ -96,11 +113,12 @@ function InitMainFrameTable(data)
 	local k = 0
 	local k2 = 1
 	local greed = 0.0045
-	for i = 1, 12 do
+	for i = 1, 12 do -- заполнение таблицы пустышек
 		data.FrameTable[i] = {
 			SelfFrame = nil, -- Основной фрейм
 			IconFrame = nil, -- Его иконка
 			CdIndicatorFrame = nil, -- Фрейм перезарядки
+			ToolTip=nil, -- фрейм подскизки, общий
 			Number = i,
 			PosX = 0,
 			PosY = 0,
@@ -112,6 +130,7 @@ function InitMainFrameTable(data)
 			Full = 0,
 			CurrentCD = 0,
 			MouseOnFrame = false,
+			HotKeyPos=0,
 		}
 		local data2 = data.FrameTable[i]
 		k = k + 1

@@ -8,10 +8,10 @@ function OnPostDamage()
 	if IsUnitType(target,UNIT_TYPE_HERO) then
 		--print("Герой получил урон")
 		local data=HERO[GetPlayerId(GetOwningPlayer(target))]
-		if data.CustomAbilities.Q.Ready then
+		if data.CustomAbilities[1].Ready then --Q
 			--print("Есть способность уворот")
 			if not data.FrameTable[9].OnCD then
-				StarFrameCooldown(data.FrameTable[9],data.CustomAbilities.Q.CD)
+				StarFrameCooldown(data.FrameTable[9],data.CustomAbilities[1].CD)
 				data.EvasionState=true
 
 				PhaseEvade(data)

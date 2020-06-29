@@ -88,10 +88,10 @@ function OnPostDamage()
 	if IsUnitType(target,UNIT_TYPE_HERO) then
 		--print("Герой получил урон")
 		local data=HERO[GetPlayerId(GetOwningPlayer(target))]
-		if data.CustomAbilities.Q.Ready then
+		if data.CustomAbilities[1].Ready then --Q
 			--print("Есть способность уворот")
 			if not data.FrameTable[9].OnCD then
-				StarFrameCooldown(data.FrameTable[9],data.CustomAbilities.Q.CD)
+				StarFrameCooldown(data.FrameTable[9],data.CustomAbilities[1].CD)
 				data.EvasionState=true
 
 				PhaseEvade(data)
@@ -251,15 +251,17 @@ do
 		InitGlobalsOrigin()
 		perebor = CreateGroup() --1 едиснвенная глобальная группа на всю игру, никакие Destroy Привет гуишники
 		--InitSpellTrigger() -- Инициализация функции кастов
-		InitHEROTable() -- Инициализация таблицы героев
+
 		KeyRegistration() -- инициализация отлова нажатия клавиш
 		InitSelectionRegister() -- инициализация выбора
 		InitMouseMoveTrigger() -- Запуск отслеживания положения мыши
 		InitDamage()
+		InitHEROTable() -- Инициализация таблицы героев
 		--InitSoundsA()--Создаём звуки
 		--InitUnitDeath()-- инициализация смерти
 		--CreateGlue()
 		TimerStart(CreateTimer(), 0, false, function()
+
 			--Test12FrameAbility()-- фреймы
 			InitMainFrameTable(HERO[0]) -- мульти создаётся здесь
 		end)
@@ -279,7 +281,10 @@ end
 
 function InitHEROTable()
 	EnableDragSelect(false, false)
-
+	if BlzLoadTOCFile("Main.toc") then
+	else
+		print("ошибка загрузки toc")
+	end
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		HERO[i] = {
 			pid = i,
@@ -288,25 +293,36 @@ function InitHEROTable()
 			IsMainHeroOnHit = false,
 			EvasionState=false,
 			FirePillarState=false,
-			CustomAbilities = {
-				Q = {
+			CustomAbilities = { -- статичные данные, но менять можно и муи
+				[1] = {
 					Ready = true,
 					CD=10,
+					Name="Фазовый сдвиг",
+					Description="\nПри получении урона герой смещается между пространствами и избегает этого урона а также любого последующего в течении 0.5 сек. Атаки по герою уменьшают перезарядку способности на 1 секунду"
 				},
-				W = {
+				[2] = {
 					Ready = true,
 					CD=15,
+					Name="Огненный столб",
+					Description="Выпускает поток огня впереди себя"
 				},
-				E = {},
+				[3] = {
+					Ready = true,
+					CD=7,
+					Name="Поле кактусов",
+					Description="Сажает кактусы в указанной точке, сажайте кактусы по 1 или удерживайте левую кнопку мыши зажатой, для массовм посадки. Способность имеет 10 зарядов, перезарядка заряда - 7 секунд ",
+					MaxCharges=10
+				},
 				R = {},
 				S = {},
 				D = {},
 				F = {}
 			},
-			FrameTable = {
+			FrameTable = {-- создание таблице пустыше
 				SelfFrame = nil, -- Основной фрейм
 				IconFrame = nil, -- Его иконка
 				CdIndicatorFrame = nil, -- Фрейм перезарядки
+				ToolTip=nil, -- фрейм подскизки, общий
 				Number = i,
 				PosX = 0,
 				PosY = 0,
@@ -318,6 +334,7 @@ function InitHEROTable()
 				Full = 0,
 				CurrentCD = 0,
 				MouseOnFrame = false,
+				HotKeyPos=0,
 			},
 			ReleaseQ=false,
 			ReleaseW=false,
@@ -335,11 +352,12 @@ function InitMainFrameTable(data)
 	local k = 0
 	local k2 = 1
 	local greed = 0.0045
-	for i = 1, 12 do
+	for i = 1, 12 do -- заполнение таблицы пустышек
 		data.FrameTable[i] = {
 			SelfFrame = nil, -- Основной фрейм
 			IconFrame = nil, -- Его иконка
 			CdIndicatorFrame = nil, -- Фрейм перезарядки
+			ToolTip=nil, -- фрейм подскизки, общий
 			Number = i,
 			PosX = 0,
 			PosY = 0,
@@ -351,6 +369,7 @@ function InitMainFrameTable(data)
 			Full = 0,
 			CurrentCD = 0,
 			MouseOnFrame = false,
+			HotKeyPos=0,
 		}
 		local data2 = data.FrameTable[i]
 		k = k + 1
@@ -421,11 +440,12 @@ function KeyRegistration()
 		local data = HERO[pid]
 		if not data.ReleaseW then
 			data.ReleaseW = true
-			print("кнопка W нажата, нужен огонь")
-			if not data.FrameTable[10].OnCD then
+			--print("кнопка W нажата, нужен огонь")
+			if not data.FrameTable[10].OnCD then --TODO реал реди
 				StarFrameCooldown(data.FrameTable[10],10)
 				data.FirePillarState=true
 				StartFirePillar(data)
+
 			end
 			--MarkCreatorW(data)
 		end
@@ -474,6 +494,13 @@ function KeyRegistration()
 		local data = HERO[pid]
 		if not data.ReleaseE then
 			data.ReleaseE = true
+			if not data.FrameTable[11].OnCD then --
+				--StarFrameCooldown(data.FrameTable[11],10)
+				--data.FirePillarState=true
+				--StartFirePillar(data)
+				EatingCactus(data)
+
+			end
 			--data.MarkIsActivated=false
 			--print("Q is Pressed Mark Creation")
 			--MarkCreatorE(data)
@@ -589,8 +616,11 @@ function InitSelectionRegister()
 			if not data.UnitHero then --первый выбор героя
 				data.UnitHero = hero
 				--CreateAbilityFrame(5)
-				CreateAbilityFrame(data,9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive")
-				CreateAbilityFrame(data,10,"ReplaceableTextures\\CommandButtons\\BTNFireForTheCannon", "active")
+				CreateAbilityFrame(data,9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive",1)
+				CreateAbilityFrame(data,10,"ReplaceableTextures\\CommandButtons\\BTNFireForTheCannon", "active",2)
+				CreateAbilityFrame(data,11,nil, "active",3)
+
+				--CreateAbilityFrame(data,9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive",1)
 				TimerStart(CreateTimer(), 0.01, true, function()
 					local u = GetMainSelectedUnit(GetSelectedUnitIndex())
 					if u==data.UnitHero then
@@ -739,6 +769,26 @@ end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
+--- DateTime: 29.06.2020 23:06
+---
+cactusModel="Doodads\\Barrens\\Plants\\Cactus\\Cactus".."" --0-9
+function EatingCactus(mainData)
+	print("курсор превращается в кактус")
+	local r=GetRandomInt(0,9)
+	local eff=AddSpecialEffect(cactusModel..r,GetPlayerMouseX[mainData.pid],GetPlayerMouseY[mainData.pid])
+	BlzSetSpecialEffectYaw(eff,math.rad(GetRandomReal(0,360)))
+	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		local x,y=GetPlayerMouseX[mainData.pid],GetPlayerMouseY[mainData.pid]
+		local z=GetTerrainZ(x,y)
+		BlzSetSpecialEffectPosition(eff,x,y,z)
+		if mainData.ReleaseLMB then
+			DestroyTimer(GetExpiredTimer())
+		end
+	end)
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
 --- DateTime: 25.06.2020 22:27
 ---
 function PhaseEvade(data)
@@ -811,20 +861,37 @@ end
 --- Created by Bergi.
 --- DateTime: 29.06.2020 16:21
 ---
-function CreateAbilityToolTip(data)
-	local TT=BlzCreateFrame("DemoBoxTooltip", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
-	BlzFrameSetSize(TT,0.29,0.1)
-	BlzFrameSetAbsPoint(TT,FRAMEPOINT_CENTER,0.655,0.3)
-	local contaiter=BlzFrameGetChild(TT,1)
+function CreateAbilityToolTip(mainData,data)
+	data.ToolTip=BlzCreateFrame("DemoBoxTooltip", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
+	BlzFrameSetSize(data.ToolTip,0.29,0.10)
+	BlzFrameSetAbsPoint(data.ToolTip,FRAMEPOINT_CENTER,0.655,0.25)
+	local contaiter=BlzFrameGetChild(data.ToolTip,1)
 	local title=BlzFrameGetChild(contaiter,0)
 	local description=BlzFrameGetChild(contaiter,1)
-	BlzFrameSetText(title,"Фазовый сдвиг")
-	BlzFrameSetText(description,"При получении урона герой смещается между пространствами и избегает этого урона а также любого последующего в течении 0.5 сек. Атаки по герою уменьшают перезарядку способности на 1 секунду")
-
+	BlzFrameSetText(title,mainData.CustomAbilities[data.HotKeyPos].Name)
+	BlzFrameSetText(description,mainData.CustomAbilities[data.HotKeyPos].Description)
+	BlzFrameSetVisible(data.ToolTip,false)
+	--print(mainData.CustomAbilities[data.HotKeyPos].Name)
 end
-function ShowAbilityTooltip (data,isShow)
+function ShowAbilityTooltip (mainData,data,isShow)
+	if isShow then
+		if GetLocalPlayer()==Player(mainData.pid) then
+			--print(mainData.CustomAbilities[data.HotKeyPos].Name.." Шоу тултип вызван")
+			BlzFrameSetVisible(data.ToolTip,true)
+		end
+	end
 	return isShow
 end
+
+function HideAllToolTips(mainData)
+	--print("способности скрыты")
+	for i=1,12 do
+
+		local data=mainData.FrameTable[i]
+	BlzFrameSetVisible(data.ToolTip,false)
+	end
+end
+
 
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -1037,22 +1104,20 @@ end
 
 
 
-function CreateAbilityFrame(mainData,pos,texture,type) -- позиция 1 - 12
+function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позиция 1 - 12
 	local data=mainData.FrameTable[pos]
+	data.HotKeyPos=HotKeyPos -- выставление индекса
+	CreateAbilityToolTip(mainData,data)-- создание тултипа
 	if not texture then
 		texture="ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn"
 	end
 
 	--data.SelfFrame = BlzCreateFrameByType("GLUETEXTBUTTON", "MyButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScriptDialogButton", 0)
-	if BlzLoadTOCFile("Main.toc") then
-	else
-		print("ошибка загрузки toc")
-	end
+
 	data.SelfFrame = BlzCreateFrame("GlueWText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
 	--data.IconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", data.SelfFrame, "", 0)
 	data.IconFrame = BlzFrameGetChild(data.SelfFrame, 0)
 	BlzFrameSetTexture(data.IconFrame, texture, 0, true)
-
 	BlzFrameSetText(BlzFrameGetChild(data.SelfFrame, 2), "")
 	--BlzFrameSetText(data.SelfFrame, [[text]])
 
@@ -1060,7 +1125,7 @@ function CreateAbilityFrame(mainData,pos,texture,type) -- позиция 1 - 12
 	--BlzFrameSetTexture(data.IconFrame, texture, 0, true)
 	BlzFrameSetSize(data.SelfFrame,NextPoint,NextPoint)
 	BlzFrameSetAbsPoint(data.SelfFrame,FRAMEPOINT_CENTER,data.PosX,data.PosY)
-	print(type)
+	--print(type)
 	if type=="active" then
 		--print("создана ативная кнопка")
 
@@ -1090,7 +1155,7 @@ function CreateAbilityFrame(mainData,pos,texture,type) -- позиция 1 - 12
 	BlzTriggerRegisterFrameEvent( TrigMOUSE_ENTER, data.SelfFrame, FRAMEEVENT_MOUSE_ENTER)
 	TriggerAddAction( TrigMOUSE_ENTER, function ()
 		--print("показать подсказку")
-		CreateAbilityToolTip(data)
+		ShowAbilityTooltip(mainData,data,true)
 		data.MouseOnFrame=true
 		local pid=GetPlayerId(GetTriggerPlayer())
 		--print(GetUnitName())
@@ -1105,6 +1170,7 @@ function CreateAbilityFrame(mainData,pos,texture,type) -- позиция 1 - 12
 	BlzTriggerRegisterFrameEvent( TrigMOUSE_LEAVE, data.SelfFrame, FRAMEEVENT_MOUSE_LEAVE)
 	TriggerAddAction( TrigMOUSE_LEAVE, function ()
 		data.MouseOnFrame=false
+		HideAllToolTips(mainData)
 		--print("убрать подсказку")
 	end)
 
@@ -1153,6 +1219,19 @@ function CreateVisualMarkerRadius (data,radius,hero,x,y,number)
 			DestroyTimer(GetExpiredTimer())
 		end
 	end)
+end
+
+function  UnitHaveReadyAbility(hero,abiID)
+	local isReady=false
+	if GetUnitAbilityLevel(hero,abiID)>0
+			and BlzGetUnitAbilityCooldownRemaining(hero,abiID)<=.01
+			and UnitAlive(hero)
+			and GetUnitState(hero,UNIT_STATE_MANA)>=BlzGetUnitAbilityManaCost(hero,abiID,GetUnitAbilityLevel(hero,abiID)-1)
+			and IsUnitSelected(hero,GetOwningPlayer(hero))
+	then
+		isReady=true
+	end
+	return isReady
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)

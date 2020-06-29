@@ -75,22 +75,20 @@ end
 
 
 
-function CreateAbilityFrame(mainData,pos,texture,type) -- позиция 1 - 12
+function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позиция 1 - 12
 	local data=mainData.FrameTable[pos]
+	data.HotKeyPos=HotKeyPos -- выставление индекса
+	CreateAbilityToolTip(mainData,data)-- создание тултипа
 	if not texture then
 		texture="ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn"
 	end
 
 	--data.SelfFrame = BlzCreateFrameByType("GLUETEXTBUTTON", "MyButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScriptDialogButton", 0)
-	if BlzLoadTOCFile("Main.toc") then
-	else
-		print("ошибка загрузки toc")
-	end
+
 	data.SelfFrame = BlzCreateFrame("GlueWText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
 	--data.IconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", data.SelfFrame, "", 0)
 	data.IconFrame = BlzFrameGetChild(data.SelfFrame, 0)
 	BlzFrameSetTexture(data.IconFrame, texture, 0, true)
-
 	BlzFrameSetText(BlzFrameGetChild(data.SelfFrame, 2), "")
 	--BlzFrameSetText(data.SelfFrame, [[text]])
 
@@ -98,7 +96,7 @@ function CreateAbilityFrame(mainData,pos,texture,type) -- позиция 1 - 12
 	--BlzFrameSetTexture(data.IconFrame, texture, 0, true)
 	BlzFrameSetSize(data.SelfFrame,NextPoint,NextPoint)
 	BlzFrameSetAbsPoint(data.SelfFrame,FRAMEPOINT_CENTER,data.PosX,data.PosY)
-	print(type)
+	--print(type)
 	if type=="active" then
 		--print("создана ативная кнопка")
 
@@ -128,7 +126,7 @@ function CreateAbilityFrame(mainData,pos,texture,type) -- позиция 1 - 12
 	BlzTriggerRegisterFrameEvent( TrigMOUSE_ENTER, data.SelfFrame, FRAMEEVENT_MOUSE_ENTER)
 	TriggerAddAction( TrigMOUSE_ENTER, function ()
 		--print("показать подсказку")
-		CreateAbilityToolTip(data)
+		ShowAbilityTooltip(mainData,data,true)
 		data.MouseOnFrame=true
 		local pid=GetPlayerId(GetTriggerPlayer())
 		--print(GetUnitName())
@@ -143,6 +141,7 @@ function CreateAbilityFrame(mainData,pos,texture,type) -- позиция 1 - 12
 	BlzTriggerRegisterFrameEvent( TrigMOUSE_LEAVE, data.SelfFrame, FRAMEEVENT_MOUSE_LEAVE)
 	TriggerAddAction( TrigMOUSE_LEAVE, function ()
 		data.MouseOnFrame=false
+		HideAllToolTips(mainData)
 		--print("убрать подсказку")
 	end)
 
@@ -191,4 +190,17 @@ function CreateVisualMarkerRadius (data,radius,hero,x,y,number)
 			DestroyTimer(GetExpiredTimer())
 		end
 	end)
+end
+
+function  UnitHaveReadyAbility(hero,abiID)
+	local isReady=false
+	if GetUnitAbilityLevel(hero,abiID)>0
+			and BlzGetUnitAbilityCooldownRemaining(hero,abiID)<=.01
+			and UnitAlive(hero)
+			and GetUnitState(hero,UNIT_STATE_MANA)>=BlzGetUnitAbilityManaCost(hero,abiID,GetUnitAbilityLevel(hero,abiID)-1)
+			and IsUnitSelected(hero,GetOwningPlayer(hero))
+	then
+		isReady=true
+	end
+	return isReady
 end

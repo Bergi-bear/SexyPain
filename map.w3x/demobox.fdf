@@ -36,9 +36,9 @@ Frame "FRAME" "DemoBoxTooltip"
             UseActiveContext,
             SetPoint TOPLEFT,       "DemoBoxTooltipContainer", TOPLEFT,      0.0, 0.0,
             SetPoint TOPRIGHT,       "DemoBoxTooltipContainer", TOPRIGHT,      0.0, 0.0,
-            FrameFont "MasterFont", 0.011, "",
+            FrameFont "MasterFont", 0.0114, "",
             FontJustificationH JUSTIFYLEFT,
-            Text "ARMOR_FORT"
+            Text "Название по умолчанию"
         }
 
         Frame "TEXT" "DemoBoxTooltipDescription" INHERITS "InfoPanelTitleTextTemplate" {
@@ -46,10 +46,10 @@ Frame "FRAME" "DemoBoxTooltip"
             SetPoint TOPLEFT,       "DemoBoxTooltipTitle", BOTTOMLEFT,      0.0, 0.0,
             SetPoint TOPRIGHT,       "DemoBoxTooltipTitle", BOTTOMRIGHT,      0.0, 0.0,
             SetPoint BOTTOM,       "DemoBoxTooltipContainer", BOTTOM,      0.0, 0.0,
-            FrameFont "MasterFont", 0.011, "",
+            FrameFont "MasterFont", 0.0114, "",
             FontJustificationV JUSTIFYTOP,
             FontJustificationH JUSTIFYLEFT,
-            Text "ARMORTIP_FORT"
+            Text "Описание по умолчанию"
         }
     }
 }
