@@ -16,15 +16,51 @@ function CreateUnitsForPlayer0()
     local unitID
     local t
     local life
-    u = BlzCreateUnitWithSkin(p, FourCC("ndqv"), -2087.4, -1356.0, -77.925, FourCC("ndqv"))
-    SetUnitState(u, UNIT_STATE_MANA, 0)
+    u = BlzCreateUnitWithSkin(p, FourCC("ndqv"), -2087.4, -1356.0, 282.075, FourCC("ndqv"))
     u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -2351.6, -1641.8, 155.011, FourCC("hpea"))
     u = BlzCreateUnitWithSkin(p, FourCC("N000"), -2636.4, -1670.9, 24.710, FourCC("N000"))
-    u = BlzCreateUnitWithSkin(p, FourCC("ndqt"), -2029.0, -1575.4, -79.723, FourCC("ndqt"))
-    u = BlzCreateUnitWithSkin(p, FourCC("ndqp"), -2345.8, -1338.1, -57.115, FourCC("ndqp"))
-    SetUnitState(u, UNIT_STATE_MANA, 0)
+    u = BlzCreateUnitWithSkin(p, FourCC("ndqt"), -2029.0, -1575.4, 280.277, FourCC("ndqt"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ndqp"), -2345.8, -1338.1, 302.885, FourCC("ndqp"))
     u = BlzCreateUnitWithSkin(p, FourCC("ndqs"), -1943.5, -1887.5, 318.932, FourCC("ndqs"))
-    SetUnitState(u, UNIT_STATE_MANA, 0)
+end
+
+function CreateUnitsForPlayer1()
+    local p = Player(1)
+    local u
+    local unitID
+    local t
+    local life
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1934.5, -3067.2, 149.671, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1862.1, -3137.1, 0.593, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1739.7, -3162.9, 160.812, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1700.1, -3161.1, 353.210, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1684.8, -3107.1, 192.267, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1669.5, -3074.9, 137.806, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1700.5, -3049.9, 160.768, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1736.5, -3049.9, 152.912, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -1771.8, -3097.7, 210.647, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -975.3, -1833.3, 137.905, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -971.1, -1976.5, 321.668, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -909.6, -2084.0, 244.420, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -856.5, -2117.1, 210.768, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -899.6, -1992.5, 231.972, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -834.6, -1875.4, 77.950, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -886.3, -1824.8, 238.048, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -949.2, -1764.5, 224.260, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -895.3, -1889.3, 84.301, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -790.2, -1989.8, 267.141, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -775.8, -2094.2, 103.593, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hrif"), -1544.5, -237.2, 12.701, FourCC("hrif"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hrif"), -1514.9, -450.6, 325.897, FourCC("hrif"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hrif"), -1468.3, -541.1, 25.852, FourCC("hrif"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hrif"), -1388.0, -560.8, 349.035, FourCC("hrif"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hrif"), -1304.8, -496.3, 213.218, FourCC("hrif"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hrif"), -1274.7, -401.5, 119.348, FourCC("hrif"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hrif"), -1309.4, -300.4, 171.403, FourCC("hrif"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hrif"), -1346.2, -237.2, 72.743, FourCC("hrif"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hrif"), -1410.1, -212.0, 1.296, FourCC("hrif"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hrif"), -1436.8, -273.1, 299.947, FourCC("hrif"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hrif"), -1414.4, -380.6, 118.414, FourCC("hrif"))
 end
 
 function CreatePlayerBuildings()
@@ -33,6 +69,7 @@ end
 
 function CreatePlayerUnits()
     CreateUnitsForPlayer0()
+    CreateUnitsForPlayer1()
 end
 
 function CreateAllUnits()
@@ -53,16 +90,20 @@ function OnPostDamage()
 		local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 		if data.CustomAbilities.Q.Ready then
 			--print("Есть способность уворот")
-			if not FrameTable[9].OnCD then
-				StarFrameCooldown(FrameTable[9],10)
+			if not data.FrameTable[9].OnCD then
+				StarFrameCooldown(data.FrameTable[9],data.CustomAbilities.Q.CD)
+				data.EvasionState=true
+
+				PhaseEvade(data)
+			else
+				AddSpeedToFrameCD(data.FrameTable[9],1)
+			end
+			if data.EvasionState then
 				BlzSetEventDamage(0)
 				FlyTextTagMiss(target,"Промах",GetOwningPlayer(target))
 				if IsUnitEnemy(caster,GetOwningPlayer(target)) then
 					FlyTextTagMiss(target,"Промах",GetOwningPlayer(caster))
 				end
-				PhaseEvade(target)
-			else
-				AddSpeedToFrameCD(FrameTable[9],1)
 			end
 		end
 	end
@@ -220,7 +261,7 @@ do
 		--CreateGlue()
 		TimerStart(CreateTimer(), 0, false, function()
 			--Test12FrameAbility()-- фреймы
-			InitMainFrameTable()
+			InitMainFrameTable(HERO[0]) -- мульти создаётся здесь
 		end)
 	end
 
@@ -237,64 +278,91 @@ do
 end
 
 function InitHEROTable()
-	EnableDragSelect(false,false)
+	EnableDragSelect(false, false)
 
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		HERO[i] = {
 			pid = i,
 			UnitHero = nil,
-			IsInterface=false,
-			IsMainHeroOnHit=false,
-			CustomAbilities={
-				Q={
-					Ready=true,
+			IsInterface = false,
+			IsMainHeroOnHit = false,
+			EvasionState=false,
+			FirePillarState=false,
+			CustomAbilities = {
+				Q = {
+					Ready = true,
+					CD=10,
 				},
-				W={},
-				E={},
-				R={},
-				S={},
-				D={},
-				F={}
+				W = {
+					Ready = true,
+					CD=15,
+				},
+				E = {},
+				R = {},
+				S = {},
+				D = {},
+				F = {}
 			},
+			FrameTable = {
+				SelfFrame = nil, -- Основной фрейм
+				IconFrame = nil, -- Его иконка
+				CdIndicatorFrame = nil, -- Фрейм перезарядки
+				Number = i,
+				PosX = 0,
+				PosY = 0,
+				OnCD = false,
+				CurrentCDTime = 0,
+				Timer = nil,
+				PercentAmount = 0,
+				OnPaused = false,
+				Full = 0,
+				CurrentCD = 0,
+				MouseOnFrame = false,
+			},
+			ReleaseQ=false,
+			ReleaseW=false,
+			ReleaseE=false,
+			ReleaseR=false,
+			ReleaseLMB=false,
+			ReleaseRMB=false,
 		}
 	end
 end
 
 
-FrameTable={}
-function InitMainFrameTable()
+function InitMainFrameTable(data)
 	--	local frames={}
-	local k=0
-	local k2=1
-	local greed=0.0045
-	for i=1,12 do
-		FrameTable[i]={
-			SelfFrame=nil, -- Основной фрейм
-			IconFrame=nil, -- Его иконка
-			CdIndicatorFrame=nil, -- Фрейм перезарядки
-			Number=i,
-			PosX=0,
-			PosY=0,
-			OnCD=false,
-			CurrentCDTime=0,
-			Timer=nil,
-			PercentAmount=0,
-			OnPaused=false,
-			Full=0,
-			CurrentCD=0,
-			MouseOnFrame=false,
+	local k = 0
+	local k2 = 1
+	local greed = 0.0045
+	for i = 1, 12 do
+		data.FrameTable[i] = {
+			SelfFrame = nil, -- Основной фрейм
+			IconFrame = nil, -- Его иконка
+			CdIndicatorFrame = nil, -- Фрейм перезарядки
+			Number = i,
+			PosX = 0,
+			PosY = 0,
+			OnCD = false,
+			CurrentCDTime = 0,
+			Timer = nil,
+			PercentAmount = 0,
+			OnPaused = false,
+			Full = 0,
+			CurrentCD = 0,
+			MouseOnFrame = false,
 		}
-		local data=FrameTable[i]
-		k=k+1
+		local data2 = data.FrameTable[i]
+		k = k + 1
 
-		if k==5 then
-			k=1
-			k2=k2+1
+		if k == 5 then
+			k = 1
+			k2 = k2 + 1
 		end
-		data.PosX=0.637+((NextPoint+greed)*(k-1))
-		data.PosY=0.113-((NextPoint+greed)*(k2-1))
+		data2.PosX = 0.637 + ((NextPoint + greed) * (k - 1))
+		data2.PosY = 0.113 - ((NextPoint + greed) * (k2 - 1))
 	end
-	return FrameTable
+	return data.FrameTable
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -353,7 +421,13 @@ function KeyRegistration()
 		local data = HERO[pid]
 		if not data.ReleaseW then
 			data.ReleaseW = true
-			MarkCreatorW(data)
+			print("кнопка W нажата, нужен огонь")
+			if not data.FrameTable[10].OnCD then
+				StarFrameCooldown(data.FrameTable[10],10)
+				data.FirePillarState=true
+				StartFirePillar(data)
+			end
+			--MarkCreatorW(data)
 		end
 	end)
 	local TrigDepressW = CreateTrigger()
@@ -375,9 +449,10 @@ function KeyRegistration()
 		local data = HERO[pid]
 		if not data.ReleaseQ then
 			data.ReleaseQ = true
+
 			--data.MarkIsActivated=false
 			--print("Q is Pressed Mark Creation")
-			MarkCreatorQ(data)
+			--MarkCreatorQ(data)
 		end
 	end)
 	local TrigDepressQ = CreateTrigger()
@@ -401,7 +476,7 @@ function KeyRegistration()
 			data.ReleaseE = true
 			--data.MarkIsActivated=false
 			--print("Q is Pressed Mark Creation")
-			MarkCreatorE(data)
+			--MarkCreatorE(data)
 		end
 	end)
 	local TrigDepressE = CreateTrigger()
@@ -425,7 +500,7 @@ function KeyRegistration()
 			data.ReleaseR = true
 			--data.MarkIsActivated=false
 			--print("Q is Pressed Mark Creation")
-			MarkCreatorR(data)
+			--MarkCreatorR(data)
 		end
 	end)
 	local TrigDepressR = CreateTrigger()
@@ -514,7 +589,8 @@ function InitSelectionRegister()
 			if not data.UnitHero then --первый выбор героя
 				data.UnitHero = hero
 				--CreateAbilityFrame(5)
-				CreateAbilityFrame(9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive")
+				CreateAbilityFrame(data,9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive")
+				CreateAbilityFrame(data,10,"ReplaceableTextures\\CommandButtons\\BTNFireForTheCannon", "active")
 				TimerStart(CreateTimer(), 0.01, true, function()
 					local u = GetMainSelectedUnit(GetSelectedUnitIndex())
 					if u==data.UnitHero then
@@ -539,7 +615,6 @@ function InitSelectionRegister()
 			ResetInterfaceToDefault(data)
 			data.IsInterface=false
 		end
-
 
 	end)
 end
@@ -574,35 +649,182 @@ end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
---- DateTime: 25.06.2020 22:27
+--- DateTime: 06.02.2020 12:47
 ---
-function PhaseEvade(hero)
-	local duration=0.5
-	local sx,sy=GetUnitXY(hero)
-	local angle=GetUnitFacing(hero)-90
-	local speed=250-200
-	local IsTurn=1
-	local maxRange=200/10
+function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage,maxDistance)
+	local CollisionRange = 80
+	if not damage then
+		damage = 200
+	end
+	local xhero, yhero = GetUnitX(hero), GetUnitY(hero)
+	local zhero = GetUnitZ(hero) + 60
+	local bullet = AddSpecialEffect(effectmodel, xs, ys)
+	local bam = nil--AddSpecialEffect("Abilities/Weapons/SteamTank/SteamTankImpact.mdl",xs,ys)
+	local cloud = nil--AddSpecialEffect("Abilities/Weapons/SteamTank/SteamTankImpact.mdl",xs,ys)
+	local CollisionEnemy = false
+	local CollisisonDestr = false
+	local DamagingUnit = nil
+	if effectmodel == "Abilities\\Weapons\\FireBallMissile\\FireBallMissile" then
+		--print("Пуля из мушкета капитана")
+		BlzSetSpecialEffectScale(bullet, 2)
+		--zhero = GetUnitZ(hero) + 120
+	end
+	BlzSetSpecialEffectScale(bam, 0.1)
+	BlzSetSpecialEffectScale(cloud, 0.02)
+	DestroyEffect(bam)
+	DestroyEffect(cloud)
+	BlzSetSpecialEffectZ(bullet, zhero)
+	local angleCurrent = angle
+	local heroCurrent = hero
+	local dist = 0
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-		duration=duration-TIMER_PERIOD
-
-		local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),speed*IsTurn,angle)
-		SetUnitX(hero,x)
-		SetUnitY(hero,y)
-
-		--speed=speed-10
-		--maxRange=maxRange-10
-		--print(maxRange)
-		if not IsUnitInRangeXY(hero,sx,sy,maxRange) then
-			IsTurn=-IsTurn
+		dist = dist + speed
+		local x, y, z = BlzGetLocalSpecialEffectX(bullet), BlzGetLocalSpecialEffectY(bullet), BlzGetLocalSpecialEffectZ(bullet)
+		local zGround = GetTerrainZ(MoveX(x, speed * 2, angleCurrent), MoveY(y, speed * 2, angleCurrent))
+		BlzSetSpecialEffectYaw(bullet, math.rad(angleCurrent))
+		if GetUnitTypeId(heroCurrent) == FourCC('e009') then
+			-- у горного великана тиника нет потери высоты
+			BlzSetSpecialEffectPosition(bullet, MoveX(x, speed, angleCurrent), MoveY(y, speed, angleCurrent), z)
+		else
+			BlzSetSpecialEffectPosition(bullet, MoveX(x, speed, angleCurrent), MoveY(y, speed, angleCurrent), z - 2)
 		end
-		if duration<=0 then
+
+
+		--BlzSetSpecialEffectPosition(cloud,MoveX(x,speed/3,angle),MoveY(y,speed/3,angle),z-2)
+		SetFogStateRadius(GetOwningPlayer(heroCurrent), FOG_OF_WAR_VISIBLE, x, y, 400, true)-- Небольгая подсветка
+
+		--local xbam,ybam=BlzGetLocalSpecialEffectX(bam),BlzGetLocalSpecialEffectY(bam)
+		--BlzSetSpecialEffectPosition(bam,MoveX(xbam,2*data.CurrentSpeed,GetUnitFacing(hero)),MoveY(ybam,2*data.CurrentSpeed,GetUnitFacing(hero)),z-50)
+		local ZBullet = BlzGetLocalSpecialEffectZ(bullet)
+		--print("zGround ="..zGround.."z= "..z)
+		--BlzSetSpecialEffectPosition(bam,MoveX(GetUnitX(hero),120,GetUnitFacing(hero)),MoveY(GetUnitY(hero),120,GetUnitFacing(hero)),z)
+		CollisionEnemy, DamagingUnit = UnitDamageArea(heroCurrent, 0, x, y, CollisionRange, ZBullet)
+		if GetUnitTypeId(DamagingUnit) == FourCC('e009') then
+			--print("Есть пробитие")
+			if effectmodel == Special then
+				HealUnit(DamagingUnit, -200)
+			end
+			if effectmodel == stoneEffModel then
+				HealUnit(DamagingUnit, -10)
+			end
+		end
+		CollisisonDestr = PointContentDestructable(x, y, CollisionRange, false,0,hero)
+		local PerepadZ = zGround - z
+		if dist > maxDistance or CollisionEnemy or CollisisonDestr or IsUnitType(DamagingUnit, UNIT_TYPE_STRUCTURE) or PerepadZ > 20 then
+			--or zGround+z>=-70+z --z<=147
+			PointContentDestructable(x, y, CollisionRange, true,0,hero)
+			--print(z)
+			--print("Условие урона прошло для"..GetUnitName(DamagingUnit))
+			local stunDuration=1
+			--StunArea(hero,x,y,CollisionRange,stunDuration)
+			UnitDamageArea(hero, damage, x, y, CollisionRange, ZBullet)
+			if DamagingUnit  and IsUnitType(hero,UNIT_TYPE_HERO) then
+				FlyTextTagCriticalStrike(DamagingUnit,R2I(damage).."!",GetOwningPlayer(hero))
+			end
+
+			DestroyEffect(bullet)
 			DestroyTimer(GetExpiredTimer())
-			SetUnitPositionSmooth(hero,sx,sy)
+
+
+			if not DamagingUnit then
+				DestroyEffect(bullet)
+				DestroyTimer(GetExpiredTimer())
+			end
 		end
 	end)
 end
 
+
+
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 25.06.2020 22:27
+---
+function PhaseEvade(data)
+	local hero=data.UnitHero
+	local duration=0.5
+	local sx,sy=GetUnitXY(hero)
+	--local angle=0
+	local speed=80
+	local IsTurn=1
+	local maxRange=speed/2
+
+	local eff=AddSpecialEffect("units\\demon\\Demoness\\Demoness",GetUnitXY(hero))
+	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		duration=duration-TIMER_PERIOD
+		local angle=GetUnitFacing(hero)-90
+		local z,x,y=GetUnitZ(hero),MoveXY(GetUnitX(hero),GetUnitY(hero),speed*IsTurn,angle)
+
+		BlzSetSpecialEffectPosition(eff,x,y,z)
+		BlzSetSpecialEffectYaw(eff,math.rad(GetUnitFacing(hero)))
+		--SetUnitX(hero,x)
+		--SetUnitY(hero,y)
+
+		--speed=speed-10
+		--maxRange=maxRange-10
+		--print(maxRange)
+		if  DistanceBetweenXY(x,y,GetUnitXY(hero))>=maxRange then
+			IsTurn=-IsTurn
+		end
+		if duration<=0 then
+			data.EvasionState=false
+			DestroyTimer(GetExpiredTimer())
+			BlzSetSpecialEffectPosition(eff,OutPoint,OutPoint,0)
+			DestroyEffect(eff)
+			--SetUnitPositionSmooth(hero,sx,sy)
+		end
+	end)
+end
+
+
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 26.06.2020 14:56
+---
+function StartFirePillar(data)
+	local effModel="Abilities\\Weapons\\FireBallMissile\\FireBallMissile"
+	local hero=data.UnitHero
+	local angleCast = GetUnitFacing(hero)--AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetPlayerMouseX[data.pid], GetPlayerMouseY[data.pid]) / bj_DEGTORAD
+	local curAngle=angleCast
+
+	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		angleCast = AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetPlayerMouseX[data.pid], GetPlayerMouseY[data.pid]) / bj_DEGTORAD
+		curAngle = lerpTheta(curAngle, angleCast, TIMER_PERIOD * 8)
+		--angle=GetUnitFacing(hero)
+		if not data.FrameTable[10].OnCD then
+			data.FirePillarState=false
+		end
+
+		if data.FirePillarState then
+			local x,y=MoveXY(GetUnitX(hero),GetUnitY(hero),50,curAngle)
+			CreateAndForceBullet(hero,curAngle,50,effModel,x,y,5,250)
+		else
+			DestroyTimer(GetExpiredTimer())
+		end
+	end)
+end
+
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 29.06.2020 16:21
+---
+function CreateAbilityToolTip(data)
+	local TT=BlzCreateFrame("DemoBoxTooltip", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
+	BlzFrameSetSize(TT,0.29,0.1)
+	BlzFrameSetAbsPoint(TT,FRAMEPOINT_CENTER,0.655,0.3)
+	local contaiter=BlzFrameGetChild(TT,1)
+	local title=BlzFrameGetChild(contaiter,0)
+	local description=BlzFrameGetChild(contaiter,1)
+	BlzFrameSetText(title,"Фазовый сдвиг")
+	BlzFrameSetText(description,"При получении урона герой смещается между пространствами и избегает этого урона а также любого последующего в течении 0.5 сек. Атаки по герою уменьшают перезарядку способности на 1 секунду")
+
+end
+function ShowAbilityTooltip (data,isShow)
+	return isShow
+end
 
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -754,23 +976,13 @@ end
 
 function StarFrameCooldown(data,cd)
 	if data.Timer then
-	--	print("сборс КД если фрейм уже был в кд")
-		DestroyTimer(data.Timer)
-		data.Timer=nil
-		BlzDestroyFrame(data.CdIndicatorFrame)
-		data.Full=0
-		data.OnCD=false
+		EndFrameCD(data)
 	end
 	local frameCount=1024
 	data.PercentAmount=(0.05*frameCount)/cd
-	--print((0.05*frameCount)/cd)
 	data.Full=0
 	data.CdIndicatorFrame=CreateCooldownIndicator(data)
-	--local text = BlzCreateFrameByType("TEXT", "ButtonChargesText", data.CdIndicatorFrame, "", 0)
 	data.OnCD=true
-	--BlzFrameSetPoint(text, FRAMEPOINT_CENTER, data.CdIndicatorFrame, FRAMEPOINT_CENTER, 0.,0.)
-	--BlzFrameSetScale(text,1.5)
-	--BlzFrameSetAlpha(text,255)
 	data.CurrentCDTime=cd
 	data.CurrentCD=cd
 	data.Timer=CreateTimer()
@@ -780,15 +992,9 @@ function StarFrameCooldown(data,cd)
 			data.CurrentCDTime=data.CurrentCDTime-0.05
 		end
 		BlzFrameSetText(data.SelfFrame, string.format("%02.1f",data.CurrentCDTime))
-		--BlzFrameSetText(text,string.format("%02.1f",data.CurrentCDTime))
 		BlzFrameSetTexture(data.CdIndicatorFrame, "DDS512".."\\000"..Zero4(R2I(data.Full+data.PercentAmount)), 0, true)
 		if data.Full>frameCount-1 then
-			DestroyTimer(data.Timer)
-			BlzFrameSetText(data.SelfFrame, "")
-			data.Timer=nil
-			BlzDestroyFrame(data.CdIndicatorFrame)
-			data.Full=0
-			data.OnCD=false
+			EndFrameCD(data)
 		end
 	end)
 end
@@ -815,6 +1021,15 @@ function PauseFrameCD(data,isPaused)  --true - пауза, false - продол�
 	end
 end
 
+function EndFrameCD(data)
+	DestroyTimer(data.Timer)
+	BlzFrameSetText(data.SelfFrame, "")
+	data.Timer=nil
+	BlzDestroyFrame(data.CdIndicatorFrame)
+	data.Full=0
+	data.OnCD=false
+end
+
 function AddSpeedToFrameCD(data,sec)
 	data.CurrentCDTime=data.CurrentCDTime-sec
 	data.Full=data.Full+(2*sec*data.CurrentCD*data.PercentAmount)
@@ -822,8 +1037,8 @@ end
 
 
 
-function CreateAbilityFrame(pos,texture,type) -- позиция 1 - 12
-	local data=FrameTable[pos]
+function CreateAbilityFrame(mainData,pos,texture,type) -- позиция 1 - 12
+	local data=mainData.FrameTable[pos]
 	if not texture then
 		texture="ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn"
 	end
@@ -845,32 +1060,46 @@ function CreateAbilityFrame(pos,texture,type) -- позиция 1 - 12
 	--BlzFrameSetTexture(data.IconFrame, texture, 0, true)
 	BlzFrameSetSize(data.SelfFrame,NextPoint,NextPoint)
 	BlzFrameSetAbsPoint(data.SelfFrame,FRAMEPOINT_CENTER,data.PosX,data.PosY)
+	print(type)
+	if type=="active" then
+		--print("создана ативная кнопка")
 
-	if not type=="passive" then
 		local  ClickTrig = CreateTrigger()
 		BlzTriggerRegisterFrameEvent(ClickTrig, data.SelfFrame, FRAMEEVENT_CONTROL_CLICK)
 		TriggerAddAction(ClickTrig, function ()
-			print("Нажата кнопка "..pos)
+			--print("Нажата кнопка "..pos)
 			BlzFrameSetEnable(BlzGetTriggerFrame(), false)
 			BlzFrameSetEnable(BlzGetTriggerFrame(), true)
 			if not data.OnCD then
-				StarFrameCooldown(data,10)
+				if pos==10 then --перезарядка огнемёта
+					StarFrameCooldown(data,10)
+					mainData.FirePillarState=true
+					StartFirePillar(mainData)
+				end
 			else
 				--PauseFrameCD(data,true)
 				--AddSpeedToFrameCD(data,0.5)
 				--print("Способность ещё не перезарядилась, подождите "..data.CurrentCDTime.." сек.")
 			end
 		end)
+	else
+	--	print("else")
 	end
 
 	local  TrigMOUSE_ENTER = CreateTrigger()
 	BlzTriggerRegisterFrameEvent( TrigMOUSE_ENTER, data.SelfFrame, FRAMEEVENT_MOUSE_ENTER)
 	TriggerAddAction( TrigMOUSE_ENTER, function ()
 		--print("показать подсказку")
+		CreateAbilityToolTip(data)
 		data.MouseOnFrame=true
 		local pid=GetPlayerId(GetTriggerPlayer())
 		--print(GetUnitName())
-		CreateVisualMarkerRadius(data,250,HERO[pid].UnitHero)
+		if data.Number==9 then--радиус для уворота
+			CreateVisualMarkerRadius(data,250,HERO[pid].UnitHero)
+		end
+		if data.Number==10 then--радиус огнемёта
+			CreateVisualMarkerRadius(data,800,HERO[pid].UnitHero,nil,nil,data.Number)
+		end
 	end)
 	local  TrigMOUSE_LEAVE = CreateTrigger()
 	BlzTriggerRegisterFrameEvent( TrigMOUSE_LEAVE, data.SelfFrame, FRAMEEVENT_MOUSE_LEAVE)
@@ -886,24 +1115,29 @@ function HideAllCustomAbility(data,isHide)
 	--print("первый вызов")
 	if isHide then
 		for i=1,12 do
-			BlzFrameSetVisible(FrameTable[i].SelfFrame,false)
+			BlzFrameSetVisible(data.FrameTable[i].SelfFrame,false)
 		end
 	else
 		for i=1,12 do
 			if GetLocalPlayer()==Player(data.pid) then
-				BlzFrameSetVisible(FrameTable[i].SelfFrame,true)
+				BlzFrameSetVisible(data.FrameTable[i].SelfFrame,true)
 			end
 		end
 	end
 end
 
-function CreateVisualMarkerRadius (data,radius,hero,x,y)
+function CreateVisualMarkerRadius (data,radius,hero,x,y,number)
 	if hero then
-		print(GetUnitName(hero))
+		--print(GetUnitName(hero))
 		--x,y=GetUnitXY(hero)
 	end
 	-- circle_fill
-	local CircleImage=CreateImage("circ",radius,radius,radius,OutPoint,OutPoint,0,0,0,0,4)
+	local path="circ"
+	if number==10 then
+		path="circle_fill"
+	end
+
+	local CircleImage=CreateImage(path,radius,radius,radius,OutPoint,OutPoint,0,0,0,0,4)
 	SetImageRenderAlways(CircleImage, true)
 	ShowImage(CircleImage,false)
 

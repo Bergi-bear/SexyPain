@@ -14,23 +14,13 @@ end
 
 function StarFrameCooldown(data,cd)
 	if data.Timer then
-	--	print("сборс КД если фрейм уже был в кд")
-		DestroyTimer(data.Timer)
-		data.Timer=nil
-		BlzDestroyFrame(data.CdIndicatorFrame)
-		data.Full=0
-		data.OnCD=false
+		EndFrameCD(data)
 	end
 	local frameCount=1024
 	data.PercentAmount=(0.05*frameCount)/cd
-	--print((0.05*frameCount)/cd)
 	data.Full=0
 	data.CdIndicatorFrame=CreateCooldownIndicator(data)
-	--local text = BlzCreateFrameByType("TEXT", "ButtonChargesText", data.CdIndicatorFrame, "", 0)
 	data.OnCD=true
-	--BlzFrameSetPoint(text, FRAMEPOINT_CENTER, data.CdIndicatorFrame, FRAMEPOINT_CENTER, 0.,0.)
-	--BlzFrameSetScale(text,1.5)
-	--BlzFrameSetAlpha(text,255)
 	data.CurrentCDTime=cd
 	data.CurrentCD=cd
 	data.Timer=CreateTimer()
@@ -40,15 +30,9 @@ function StarFrameCooldown(data,cd)
 			data.CurrentCDTime=data.CurrentCDTime-0.05
 		end
 		BlzFrameSetText(data.SelfFrame, string.format("%%02.1f",data.CurrentCDTime))
-		--BlzFrameSetText(text,string.format("%%02.1f",data.CurrentCDTime))
 		BlzFrameSetTexture(data.CdIndicatorFrame, "DDS512".."\\000"..Zero4(R2I(data.Full+data.PercentAmount)), 0, true)
 		if data.Full>frameCount-1 then
-			DestroyTimer(data.Timer)
-			BlzFrameSetText(data.SelfFrame, "")
-			data.Timer=nil
-			BlzDestroyFrame(data.CdIndicatorFrame)
-			data.Full=0
-			data.OnCD=false
+			EndFrameCD(data)
 		end
 	end)
 end
@@ -75,6 +59,15 @@ function PauseFrameCD(data,isPaused)  --true - пауза, false - продол�
 	end
 end
 
+function EndFrameCD(data)
+	DestroyTimer(data.Timer)
+	BlzFrameSetText(data.SelfFrame, "")
+	data.Timer=nil
+	BlzDestroyFrame(data.CdIndicatorFrame)
+	data.Full=0
+	data.OnCD=false
+end
+
 function AddSpeedToFrameCD(data,sec)
 	data.CurrentCDTime=data.CurrentCDTime-sec
 	data.Full=data.Full+(2*sec*data.CurrentCD*data.PercentAmount)
@@ -82,8 +75,8 @@ end
 
 
 
-function CreateAbilityFrame(pos,texture,type) -- позиция 1 - 12
-	local data=FrameTable[pos]
+function CreateAbilityFrame(mainData,pos,texture,type) -- позиция 1 - 12
+	local data=mainData.FrameTable[pos]
 	if not texture then
 		texture="ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn"
 	end
@@ -105,32 +98,46 @@ function CreateAbilityFrame(pos,texture,type) -- позиция 1 - 12
 	--BlzFrameSetTexture(data.IconFrame, texture, 0, true)
 	BlzFrameSetSize(data.SelfFrame,NextPoint,NextPoint)
 	BlzFrameSetAbsPoint(data.SelfFrame,FRAMEPOINT_CENTER,data.PosX,data.PosY)
+	print(type)
+	if type=="active" then
+		--print("создана ативная кнопка")
 
-	if not type=="passive" then
 		local  ClickTrig = CreateTrigger()
 		BlzTriggerRegisterFrameEvent(ClickTrig, data.SelfFrame, FRAMEEVENT_CONTROL_CLICK)
 		TriggerAddAction(ClickTrig, function ()
-			print("Нажата кнопка "..pos)
+			--print("Нажата кнопка "..pos)
 			BlzFrameSetEnable(BlzGetTriggerFrame(), false)
 			BlzFrameSetEnable(BlzGetTriggerFrame(), true)
 			if not data.OnCD then
-				StarFrameCooldown(data,10)
+				if pos==10 then --перезарядка огнемёта
+					StarFrameCooldown(data,10)
+					mainData.FirePillarState=true
+					StartFirePillar(mainData)
+				end
 			else
 				--PauseFrameCD(data,true)
 				--AddSpeedToFrameCD(data,0.5)
 				--print("Способность ещё не перезарядилась, подождите "..data.CurrentCDTime.." сек.")
 			end
 		end)
+	else
+	--	print("else")
 	end
 
 	local  TrigMOUSE_ENTER = CreateTrigger()
 	BlzTriggerRegisterFrameEvent( TrigMOUSE_ENTER, data.SelfFrame, FRAMEEVENT_MOUSE_ENTER)
 	TriggerAddAction( TrigMOUSE_ENTER, function ()
 		--print("показать подсказку")
+		CreateAbilityToolTip(data)
 		data.MouseOnFrame=true
 		local pid=GetPlayerId(GetTriggerPlayer())
 		--print(GetUnitName())
-		CreateVisualMarkerRadius(data,250,HERO[pid].UnitHero)
+		if data.Number==9 then--радиус для уворота
+			CreateVisualMarkerRadius(data,250,HERO[pid].UnitHero)
+		end
+		if data.Number==10 then--радиус огнемёта
+			CreateVisualMarkerRadius(data,800,HERO[pid].UnitHero,nil,nil,data.Number)
+		end
 	end)
 	local  TrigMOUSE_LEAVE = CreateTrigger()
 	BlzTriggerRegisterFrameEvent( TrigMOUSE_LEAVE, data.SelfFrame, FRAMEEVENT_MOUSE_LEAVE)
@@ -146,24 +153,29 @@ function HideAllCustomAbility(data,isHide)
 	--print("первый вызов")
 	if isHide then
 		for i=1,12 do
-			BlzFrameSetVisible(FrameTable[i].SelfFrame,false)
+			BlzFrameSetVisible(data.FrameTable[i].SelfFrame,false)
 		end
 	else
 		for i=1,12 do
 			if GetLocalPlayer()==Player(data.pid) then
-				BlzFrameSetVisible(FrameTable[i].SelfFrame,true)
+				BlzFrameSetVisible(data.FrameTable[i].SelfFrame,true)
 			end
 		end
 	end
 end
 
-function CreateVisualMarkerRadius (data,radius,hero,x,y)
+function CreateVisualMarkerRadius (data,radius,hero,x,y,number)
 	if hero then
-		print(GetUnitName(hero))
+		--print(GetUnitName(hero))
 		--x,y=GetUnitXY(hero)
 	end
 	-- circle_fill
-	local CircleImage=CreateImage("circ",radius,radius,radius,OutPoint,OutPoint,0,0,0,0,4)
+	local path="circ"
+	if number==10 then
+		path="circle_fill"
+	end
+
+	local CircleImage=CreateImage(path,radius,radius,radius,OutPoint,OutPoint,0,0,0,0,4)
 	SetImageRenderAlways(CircleImage, true)
 	ShowImage(CircleImage,false)
 

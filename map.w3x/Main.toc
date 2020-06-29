@@ -1,2 +1,2 @@
 GlueWText.fdf
-GlueWText.fdf
+demobox.fdf

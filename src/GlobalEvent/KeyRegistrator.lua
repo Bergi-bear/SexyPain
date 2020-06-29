@@ -55,7 +55,13 @@ function KeyRegistration()
 		local data = HERO[pid]
 		if not data.ReleaseW then
 			data.ReleaseW = true
-			MarkCreatorW(data)
+			print("кнопка W нажата, нужен огонь")
+			if not data.FrameTable[10].OnCD then
+				StarFrameCooldown(data.FrameTable[10],10)
+				data.FirePillarState=true
+				StartFirePillar(data)
+			end
+			--MarkCreatorW(data)
 		end
 	end)
 	local TrigDepressW = CreateTrigger()
@@ -77,9 +83,10 @@ function KeyRegistration()
 		local data = HERO[pid]
 		if not data.ReleaseQ then
 			data.ReleaseQ = true
+
 			--data.MarkIsActivated=false
 			--print("Q is Pressed Mark Creation")
-			MarkCreatorQ(data)
+			--MarkCreatorQ(data)
 		end
 	end)
 	local TrigDepressQ = CreateTrigger()
@@ -103,7 +110,7 @@ function KeyRegistration()
 			data.ReleaseE = true
 			--data.MarkIsActivated=false
 			--print("Q is Pressed Mark Creation")
-			MarkCreatorE(data)
+			--MarkCreatorE(data)
 		end
 	end)
 	local TrigDepressE = CreateTrigger()
@@ -127,7 +134,7 @@ function KeyRegistration()
 			data.ReleaseR = true
 			--data.MarkIsActivated=false
 			--print("Q is Pressed Mark Creation")
-			MarkCreatorR(data)
+			--MarkCreatorR(data)
 		end
 	end)
 	local TrigDepressR = CreateTrigger()
@@ -216,7 +223,8 @@ function InitSelectionRegister()
 			if not data.UnitHero then --первый выбор героя
 				data.UnitHero = hero
 				--CreateAbilityFrame(5)
-				CreateAbilityFrame(9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive")
+				CreateAbilityFrame(data,9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive")
+				CreateAbilityFrame(data,10,"ReplaceableTextures\\CommandButtons\\BTNFireForTheCannon", "active")
 				TimerStart(CreateTimer(), 0.01, true, function()
 					local u = GetMainSelectedUnit(GetSelectedUnitIndex())
 					if u==data.UnitHero then
@@ -241,7 +249,6 @@ function InitSelectionRegister()
 			ResetInterfaceToDefault(data)
 			data.IsInterface=false
 		end
-
 
 	end)
 end

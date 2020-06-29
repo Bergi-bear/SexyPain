@@ -22,7 +22,7 @@ do
 		--CreateGlue()
 		TimerStart(CreateTimer(), 0, false, function()
 			--Test12FrameAbility()-- фреймы
-			InitMainFrameTable()
+			InitMainFrameTable(HERO[0]) -- мульти создаётся здесь
 		end)
 	end
 
@@ -39,63 +39,89 @@ do
 end
 
 function InitHEROTable()
-	EnableDragSelect(false,false)
+	EnableDragSelect(false, false)
 
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
 		HERO[i] = {
 			pid = i,
 			UnitHero = nil,
-			IsInterface=false,
-			IsMainHeroOnHit=false,
-			CustomAbilities={
-				Q={
-					Ready=true,
+			IsInterface = false,
+			IsMainHeroOnHit = false,
+			EvasionState=false,
+			FirePillarState=false,
+			CustomAbilities = {
+				Q = {
+					Ready = true,
+					CD=10,
 				},
-				W={},
-				E={},
-				R={},
-				S={},
-				D={},
-				F={}
+				W = {
+					Ready = true,
+					CD=15,
+				},
+				E = {},
+				R = {},
+				S = {},
+				D = {},
+				F = {}
 			},
-
+			FrameTable = {
+				SelfFrame = nil, -- Основной фрейм
+				IconFrame = nil, -- Его иконка
+				CdIndicatorFrame = nil, -- Фрейм перезарядки
+				Number = i,
+				PosX = 0,
+				PosY = 0,
+				OnCD = false,
+				CurrentCDTime = 0,
+				Timer = nil,
+				PercentAmount = 0,
+				OnPaused = false,
+				Full = 0,
+				CurrentCD = 0,
+				MouseOnFrame = false,
+			},
+			ReleaseQ=false,
+			ReleaseW=false,
+			ReleaseE=false,
+			ReleaseR=false,
+			ReleaseLMB=false,
+			ReleaseRMB=false,
 		}
 	end
 end
 
 
-FrameTable={}
-function InitMainFrameTable()
+function InitMainFrameTable(data)
 	--	local frames={}
-	local k=0
-	local k2=1
-	local greed=0.0045
-	for i=1,12 do
-		FrameTable[i]={
-			SelfFrame=nil, -- Основной фрейм
-			IconFrame=nil, -- Его иконка
-			CdIndicatorFrame=nil, -- Фрейм перезарядки
-			Number=i,
-			PosX=0,
-			PosY=0,
-			OnCD=false,
-			CurrentCDTime=0,
-			Timer=nil,
-			PercentAmount=0,
-			OnPaused=false,
-			Full=0,
-			CurrentCD=0,
-			MouseOnFrame=false,
+	local k = 0
+	local k2 = 1
+	local greed = 0.0045
+	for i = 1, 12 do
+		data.FrameTable[i] = {
+			SelfFrame = nil, -- Основной фрейм
+			IconFrame = nil, -- Его иконка
+			CdIndicatorFrame = nil, -- Фрейм перезарядки
+			Number = i,
+			PosX = 0,
+			PosY = 0,
+			OnCD = false,
+			CurrentCDTime = 0,
+			Timer = nil,
+			PercentAmount = 0,
+			OnPaused = false,
+			Full = 0,
+			CurrentCD = 0,
+			MouseOnFrame = false,
 		}
-		local data=FrameTable[i]
-		k=k+1
+		local data2 = data.FrameTable[i]
+		k = k + 1
 
-		if k==5 then
-			k=1
-			k2=k2+1
+		if k == 5 then
+			k = 1
+			k2 = k2 + 1
 		end
-		data.PosX=0.637+((NextPoint+greed)*(k-1))
-		data.PosY=0.113-((NextPoint+greed)*(k2-1))
+		data2.PosX = 0.637 + ((NextPoint + greed) * (k - 1))
+		data2.PosY = 0.113 - ((NextPoint + greed) * (k2 - 1))
 	end
-	return FrameTable
+	return data.FrameTable
 end

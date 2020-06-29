@@ -10,16 +10,20 @@ function OnPostDamage()
 		local data=HERO[GetPlayerId(GetOwningPlayer(target))]
 		if data.CustomAbilities.Q.Ready then
 			--print("Есть способность уворот")
-			if not FrameTable[9].OnCD then
-				StarFrameCooldown(FrameTable[9],10)
+			if not data.FrameTable[9].OnCD then
+				StarFrameCooldown(data.FrameTable[9],data.CustomAbilities.Q.CD)
+				data.EvasionState=true
+
+				PhaseEvade(data)
+			else
+				AddSpeedToFrameCD(data.FrameTable[9],1)
+			end
+			if data.EvasionState then
 				BlzSetEventDamage(0)
 				FlyTextTagMiss(target,"Промах",GetOwningPlayer(target))
 				if IsUnitEnemy(caster,GetOwningPlayer(target)) then
 					FlyTextTagMiss(target,"Промах",GetOwningPlayer(caster))
 				end
-				PhaseEvade(target)
-			else
-				AddSpeedToFrameCD(FrameTable[9],1)
 			end
 		end
 	end
