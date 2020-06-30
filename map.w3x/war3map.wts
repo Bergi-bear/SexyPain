@@ -28,3 +28,22 @@ STRING 6
 Bergi
 }
 
+STRING 7
+// Units: N000 (Илитная Демонесса), Name (Name)
+{
+Илитная Демонесса
+}
+
+STRING 8
+// Units: N000 (Илитная Демонесса), Propernames (Proper Names)
+{
+Lola
+}
+
+STRING 9
+// Units: N000 (Илитная Демонесса), Ubertip (Tooltip - Extended)
+{
+Легкий воин ближнего боя. |n|n|cffffcc00Атакует наземные цели.|r
+
+}
+

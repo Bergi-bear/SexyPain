@@ -287,56 +287,43 @@ function InitHEROTable()
 			FirePillarState=false,
 			StartDrawing=false,
 			DestroyDrawing=false,
+			effDrawing=nil,
+			DrawingTimer=nil,
 			CustomAbilities = { -- статичные данные, но менять можно и муи
 				[1] = {
 					Ready = true,
 					CD=10,
-					Name="Фазовый сдвиг",
-					Description="\nПри получении урона герой смещается между пространствами и избегает этого урона а также любого последующего в течении 0.5 сек. Атаки по герою уменьшают перезарядку способности на 1 секунду"
+					Name="Фазовый сдвиг".." (|cffffcc00".."Пассивная".."|r)",
+					Description="При получении урона герой смещается между пространствами и избегает этого урона а также любого последующего в течении 0.5 сек. Атаки по герою уменьшают перезарядку способности на 1 секунду",
 				},
 				[2] = {
 					Ready = true,
 					CD=15,
-					Name="Огненный столб",
-					Description="Выпускает поток огня впереди себя"
+					Name="Огненный столб".." (|cffffcc00".."W".."|r)",
+					Description="Выпускает поток огня впереди себя",
 				},
 				[3] = {
 					Ready = true,
 					CD=7,
-					Name="Поле кактусов",
+					Name="Поле кактусов".." (|cffffcc00".."E".."|r)",
 					Description="Сажает кактусы в указанной точке, сажайте кактусы по 1 или удерживайте левую кнопку мыши зажатой, для массовм посадки. Способность имеет 10 зарядов, перезарядка заряда - 7 секунд ",
-					MaxCharges=100
+					MaxCharges=100,
+					ManaCost=10,
 				},
 				R = {},
 				S = {},
 				D = {},
 				F = {}
 			},
-			FrameTable = {-- создание таблице пустыше
-				--[[SelfFrame = nil, -- Основной фрейм
-				IconFrame = nil, -- Его иконка
-				CdIndicatorFrame = nil, -- Фрейм перезарядки
-				ToolTip=nil, -- фрейм подскизки, общий
-				Number = i,
-				PosX = 0,
-				PosY = 0,
-				OnCD = false,
-				CurrentCDTime = 0,
-				Timer = nil,
-				PercentAmount = 0,
-				OnPaused = false,
-				Full = 0,
-				CurrentCD = 0,
-				MouseOnFrame = false,
-				HotKeyPos=0,
-				Charges=0,]]
-			},
+			FrameTable = {},
 			ReleaseQ=false,
 			ReleaseW=false,
 			ReleaseE=false,
 			ReleaseR=false,
 			ReleaseLMB=false,
 			ReleaseRMB=false,
+			ReleaseESC=false,
+			ReleaseTAB=false,
 		}
 	end
 end
@@ -413,6 +400,19 @@ function KeyRegistration()
 				end
 			end
 		end
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
+			data.ReleaseRMB = true
+			if data.StartDrawing then
+				DestroyEatingCactus(data,data.FrameTable[11],false)
+				TimerStart(CreateTimer(), 0.001, false, function()
+					if IssueImmediateOrder(data.UnitHero,"stop") then
+						--print("stop?")
+					end
+				end)
+				--data.DestroyDrawing=true
+				--print("Нажал правую, отменяем маркер")
+			end
+		end
 	end)
 	local TrigDePressLMB = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -420,13 +420,43 @@ function KeyRegistration()
 	end
 
 	TriggerAddAction(TrigDePressLMB, function()
+		local pid = GetPlayerId(GetTriggerPlayer())
+		local data = HERO[pid]
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
-			local pid = GetPlayerId(GetTriggerPlayer())
-			local data = HERO[pid]
+
 			data.ReleaseLMB = false
+		end
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
+			data.ReleaseRMB = false
 		end
 	end)
 
+
+	-----------------------------------------------------------------OSKEY_Q
+	local gg_trg_EventUpQ = CreateTrigger()
+	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
+		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpQ, Player(i), OSKEY_Q, 0, true)
+	end
+	TriggerAddAction(gg_trg_EventUpQ, function()
+		local pid = GetPlayerId(GetTriggerPlayer())
+		local data = HERO[pid]
+		if not data.ReleaseQ then
+			data.ReleaseQ = true
+
+			--data.MarkIsActivated=false
+			--print("Q is Pressed Mark Creation")
+			--MarkCreatorQ(data)
+		end
+	end)
+	local TrigDepressQ = CreateTrigger()
+	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
+		BlzTriggerRegisterPlayerKeyEvent(TrigDepressQ, Player(i), OSKEY_Q, 0, false)
+	end
+	TriggerAddAction(TrigDepressQ, function()
+		local pid = GetPlayerId(GetTriggerPlayer())
+		local data = HERO[pid]
+		data.ReleaseQ = false
+	end)
 	-----------------------------------------------------------------OSKEY_W --в это карте это якорь
 	local gg_trg_EventUpW = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -457,31 +487,6 @@ function KeyRegistration()
 		local data = HERO[pid]
 		data.ReleaseW = false
 	end)
-	-----------------------------------------------------------------OSKEY_Q
-	local gg_trg_EventUpQ = CreateTrigger()
-	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpQ, Player(i), OSKEY_Q, 0, true)
-	end
-	TriggerAddAction(gg_trg_EventUpQ, function()
-		local pid = GetPlayerId(GetTriggerPlayer())
-		local data = HERO[pid]
-		if not data.ReleaseQ then
-			data.ReleaseQ = true
-
-			--data.MarkIsActivated=false
-			--print("Q is Pressed Mark Creation")
-			--MarkCreatorQ(data)
-		end
-	end)
-	local TrigDepressQ = CreateTrigger()
-	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		BlzTriggerRegisterPlayerKeyEvent(TrigDepressQ, Player(i), OSKEY_Q, 0, false)
-	end
-	TriggerAddAction(TrigDepressQ, function()
-		local pid = GetPlayerId(GetTriggerPlayer())
-		local data = HERO[pid]
-		data.ReleaseQ = false
-	end)
 	-----------------------------------------------------------------OSKEY_E
 	local gg_trg_EventUpE = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -493,16 +498,10 @@ function KeyRegistration()
 		if not data.ReleaseE then
 			data.ReleaseE = true
 			if CustomAbilityIsReady(data,data.FrameTable[11]) and not data.StartDrawing then
-				--StarFrameCooldown(data.FrameTable[11],10)
-				--data.FirePillarState=true
-				--StartFirePillar(data)
 				EatingCactus(data)
 				data.StartDrawing=true
 				data.DestroyDrawing=false
 			end
-			--data.MarkIsActivated=false
-			--print("Q is Pressed Mark Creation")
-			--MarkCreatorE(data)
 		end
 	end)
 	local TrigDepressE = CreateTrigger()
@@ -547,8 +546,11 @@ function KeyRegistration()
 	TriggerAddAction(gg_trg_EventUpESC, function()
 		local pid = GetPlayerId(GetTriggerPlayer())
 		local data = HERO[pid]
-		if not data.ReleaseE then
-			data.ReleaseE = true
+		if not data.ReleaseESC then
+			data.ReleaseESC = true
+			if data.StartDrawing then
+				DestroyEatingCactus(data,data.FrameTable[11],false)
+			end
 			--data.MarkIsActivated=false
 			--print("Q is Pressed Mark Creation")
 			data.MarkIsActivated = false
@@ -561,7 +563,7 @@ function KeyRegistration()
 	TriggerAddAction(TrigDepressESC, function()
 		local pid = GetPlayerId(GetTriggerPlayer())
 		local data = HERO[pid]
-		data.ReleaseE = false
+		data.ReleaseESC = false
 	end)
 	-----------------------------------------------------------------OSKEY_TAB
 	local gg_trg_EventUpTAB = CreateTrigger()
@@ -792,13 +794,38 @@ end
 --- DateTime: 29.06.2020 23:06
 ---
 cactusModel = "Doodads\\Barrens\\Plants\\Cactus\\Cactus" .. "" --0-9
+function DestroyEatingCactus(mainData,data,WCD)
+	mainData.StartDrawing=false
+	local hero=mainData.UnitHero
+	DestroyTimer(mainData.DrawingTimer)
+	BlzSetSpecialEffectPosition(mainData.effDrawing, OutPoint, OutPoint, 0)
+	DestroyEffect(mainData.effDrawing)
+	mainData.effDrawing = nil
+
+	--CreateCactus(mainData, x, y, r,curAngle)
+	if WCD then
+		--print("отмена с кд")
+		StarFrameCooldown(data,5)
+		SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
+	else
+	--	print("одиночный клик?")
+	end
+	EnableSelect(true,true)
+	return WCD
+end
+
+
 function EatingCactus(mainData)
 	--print("курсор превращается в кактус")
 	local hero = mainData.UnitHero
 	local lastX, lastY = GetPlayerMouseX[mainData.pid], GetPlayerMouseY[mainData.pid]
 	local r = GetRandomInt(0, 9)
-	local eff = AddSpecialEffect(cactusModel .. r, lastX, lastY)
-	BlzSetSpecialEffectYaw(eff, math.rad(GetRandomReal(0, 360)))
+
+	mainData.effDrawing = AddSpecialEffect(cactusModel .. r, lastX, lastY)
+	BlzSetSpecialEffectAlpha(mainData.effDrawing,60)
+	BlzSetSpecialEffectYaw(mainData.effDrawing, math.rad(GetRandomReal(0, 360)))
+
+
 	local lastDistance = 0
 	local range=80
 	local angleCast = AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetPlayerMouseX[mainData.pid], GetPlayerMouseY[mainData.pid]) / bj_DEGTORAD
@@ -809,7 +836,10 @@ function EatingCactus(mainData)
 	local data=mainData.FrameTable[11]
 	EnableSelect(false,false)
 	SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
-	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+	mainData.DrawingTimer=CreateTimer()
+
+
+	TimerStart(mainData.DrawingTimer, TIMER_PERIOD, true, function()
 		distance = DistanceBetweenXY(GetUnitX(hero), GetUnitY(hero), GetPlayerMouseX[mainData.pid], GetPlayerMouseY[mainData.pid])
 		cutDistance = math.lerp(cutDistance, distance, TIMER_PERIOD * 16)
 		angleCast = AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetPlayerMouseX[mainData.pid], GetPlayerMouseY[mainData.pid]) / bj_DEGTORAD
@@ -819,35 +849,30 @@ function EatingCactus(mainData)
 		local x, y = MoveXY(GetUnitX(hero), GetUnitY(hero), cutDistance, curAngle)
 		local distanceMove = DistanceBetweenXY(xp, yp, lastX, lastY)
 
+		if IsPointCanCreatedCactus(mainData,x,y)  then
+			BlzSetSpecialEffectColor(mainData.effDrawing,255,255,255)
+			BlzSetSpecialEffectAlpha(mainData.effDrawing,60)
+		else
+			BlzSetSpecialEffectColor(mainData.effDrawing,255,0,0)
+			BlzSetSpecialEffectAlpha(mainData.effDrawing,128)
+		end
+
 		if mainData.ReleaseLMB  then-- кнопка хажата
 			starDrawing=true
 			lastDistance = lastDistance + distanceMove
 		else
 			if starDrawing or mainData.DestroyDrawing then
-				--print("мышка отпущена")
-				mainData.StartDrawing=false
-				DestroyTimer(GetExpiredTimer())
-				BlzSetSpecialEffectPosition(eff, OutPoint, OutPoint, 0)
-				eff = nil
-				DestroyEffect(eff)
-				CreateCactus(mainData, x, y, r,curAngle)
-				EnableSelect(true,true)
-				SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
-				StarFrameCooldown(data,5)
+				if DestroyEatingCactus(mainData,data,true) then
+					CreateCactus(mainData, x, y, r,curAngle)
+				end
+
 				return
-			else
-				--print()
 			end
 		end
 		if lastDistance > range then
-			--print(lastDistance)
+			DestroyEatingCactus(mainData,data,false)
 
-			DestroyTimer(GetExpiredTimer())
-			BlzSetSpecialEffectPosition(eff, OutPoint, OutPoint, 0)
-			eff = nil
-			DestroyEffect(eff)
-
-			if CustomAbilityIsReady(mainData,mainData.FrameTable[11]) then
+			if CustomAbilityIsReady(mainData,data) then
 				EatingCactus(mainData)
 			end
 
@@ -868,12 +893,9 @@ function EatingCactus(mainData)
 		end
 		lastX, lastY = x, y
 		local z = GetTerrainZ(x, y)
-		if eff then
-			BlzSetSpecialEffectPosition(eff, x, y, z)
-			BlzSetSpecialEffectYaw(eff, math.rad(curAngle))
-		end
-		if mainData.ReleaseLMB or not UnitAlive(mainData.UnitHero) then
-			--	DestroyTimer(GetExpiredTimer())
+		if mainData.effDrawing then
+			BlzSetSpecialEffectPosition(mainData.effDrawing, x, y, z)
+			BlzSetSpecialEffectYaw(mainData.effDrawing, math.rad(curAngle))
 		end
 	end)
 end
@@ -883,15 +905,17 @@ function CreateCactus(mainData, x, y, r,angle)
 	local timeLife = CreateTimer()
 	local data=mainData.FrameTable[11]
 	if data.Charges>0 then
-		data.Charges=data.Charges-1
-		eff = AddSpecialEffect(cactusModel .. r, x, y)
-		BlzSetSpecialEffectYaw(eff, math.rad(angle))
+		if IsPointCanCreatedCactus(mainData, x, y) then
+			data.Charges=data.Charges-1
+			eff = AddSpecialEffect(cactusModel .. r, x, y)
+			BlzSetSpecialEffectYaw(eff, math.rad(angle))
+		end
 	else
 		mainData.ReleaseLMB=false
 		mainData.DestroyDrawing=true
 		--print("Зарядов больше нет")
 	end
-		
+
 	TimerStart(timeLife, TIMER_PERIOD, true, function()
 		-- урон и отталкивание
 	end)
@@ -901,6 +925,10 @@ function CreateCactus(mainData, x, y, r,angle)
 		BlzSetSpecialEffectPosition(eff, OutPoint, OutPoint, 0)
 		DestroyEffect(eff)
 	end)
+end
+
+function IsPointCanCreatedCactus(mainData,x,y)
+	return not (IsTerrainPathable(x, y,PATHING_TYPE_WALKABILITY) or not IsVisibleToPlayer(x, y,GetOwningPlayer(mainData.UnitHero)))
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -990,6 +1018,22 @@ function CreateAbilityToolTip(mainData,data)
 	BlzFrameSetText(title,mainData.CustomAbilities[data.HotKeyPos].Name)
 	BlzFrameSetText(description,mainData.CustomAbilities[data.HotKeyPos].Description)
 	BlzFrameSetVisible(data.ToolTip,false)
+	local k=0
+	if mainData.CustomAbilities[data.HotKeyPos].ManaCost then
+		BlzFrameSetText(title,mainData.CustomAbilities[data.HotKeyPos].Name.."\n    ".."|cffffff00"..mainData.CustomAbilities[data.HotKeyPos].ManaCost.."|r") -- |cffffff00TEXT|r
+		--print("способность имеет ману")
+		local res= BlzCreateFrameByType("BACKDROP", "Face",data.ToolTip, "", 0)
+		BlzFrameSetTexture(res, "UI\\Widgets\\tooltips\\Human\\tooltipmanaicon", 0, true)
+
+		BlzFrameSetSize(res, 0.01, 0.01)
+		BlzFrameSetPoint(res, FRAMEPOINT_TOPLEFT, data.ToolTip, FRAMEPOINT_TOPLEFT, 0.005,-0.017)
+		k=0.01
+	end
+	BlzFrameSetText(title,BlzFrameGetText(title).."\n ") --вставка сеператора
+	local separator=BlzCreateFrameByType("BACKDROP", "Face",data.ToolTip, "", 0)
+	BlzFrameSetTexture(separator, "UI\\Widgets\\tooltips\\Human\\horizontalseparator", 0, true)
+	BlzFrameSetSize(separator, 0.28, 1/16*0.01)
+	BlzFrameSetPoint(separator, FRAMEPOINT_TOPLEFT, data.ToolTip, FRAMEPOINT_TOPLEFT, 0.005,-0.02-k)
 	--print(mainData.CustomAbilities[data.HotKeyPos].Name)
 end
 function ShowAbilityTooltip (mainData,data,isShow)
@@ -1005,7 +1049,6 @@ end
 function HideAllToolTips(mainData)
 	--print("способности скрыты")
 	for i=1,12 do
-
 		local data=mainData.FrameTable[i]
 	BlzFrameSetVisible(data.ToolTip,false)
 	end
@@ -1126,11 +1169,12 @@ function ChangeInterfaceToQuin(data)
 end
 
 function Hide10Buttons(data)
+
 	for i =0,11 do
+		BlzFrameSetSize(BlzGetFrameByName("CommandButton_"..i, 0),0.0001,0.0001) --убирает всё
 		if i~=1 then
 			if i~=2 then
-				--BlzFrameSetVisible(BlzGetFrameByName("CommandButton_"..i, 0), false)
-				BlzFrameSetSize(BlzGetFrameByName("CommandButton_"..i, 0),0.0001,0.0001)
+				--BlzFrameSetSize(BlzGetFrameByName("CommandButton_"..i, 0),0.0001,0.0001) -- оставляет холд и стоп
 			end
 		end
 
@@ -1247,7 +1291,6 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 	--print(type)
 	if type=="active" then
 		--print("создана ативная кнопка")
-
 		local  ClickTrig = CreateTrigger()
 		BlzTriggerRegisterFrameEvent(ClickTrig, data.SelfFrame, FRAMEEVENT_CONTROL_CLICK)
 		TriggerAddAction(ClickTrig, function ()
@@ -1260,25 +1303,27 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 					mainData.FirePillarState=true
 					StartFirePillar(mainData)
 				end
-			else
-				--PauseFrameCD(data,true)
-				--AddSpeedToFrameCD(data,0.5)
-				--print("Способность ещё не перезарядилась, подождите "..data.CurrentCDTime.." сек.")
+				if pos==11 then -- старт кактусов
+					if CustomAbilityIsReady(mainData,data) and not mainData.StartDrawing then
+						EatingCactus(mainData)
+						mainData.StartDrawing=true
+						mainData.DestroyDrawing=false
+					end
+				end
 			end
 		end)
-	else
-	--	print("else")
 	end
 
-	if  mainData.CustomAbilities[HotKeyPos].MaxCharges then
+
+	if mainData.CustomAbilities[HotKeyPos].MaxCharges then
 		data.Charges=mainData.CustomAbilities[HotKeyPos].MaxCharges-50
 		--print(data.Charges)
 		data.ChargesFrame= BlzCreateFrameByType("BACKDROP", "Face",data.SelfFrame, "", 0)
 		data.ChargesFrameText = BlzCreateFrameByType("TEXT", "ButtonChargesText", data.ChargesFrame, "", 0)
-		BlzFrameSetTexture(data.ChargesFrame, "ChargesTexture.blp", 0, true)
-		BlzFrameSetSize(data.ChargesFrame, 0.015, 0.01)
+		BlzFrameSetTexture(data.ChargesFrame, "UI\\Widgets\\Console\\Human\\CommandButton\\human-button-lvls-overlay", 0, true)
+		BlzFrameSetSize(data.ChargesFrame, 0.02, 0.015)
 		--BlzFrameSetAbsPoint(data.ChargesFrame, FRAMEPOINT_CENTER,0.4+0.02 , 0.6-0.02)
-		BlzFrameSetPoint(data.ChargesFrame, FRAMEPOINT_BOTTOMRIGHT, data.SelfFrame, FRAMEPOINT_BOTTOMRIGHT, -0.001,0.001)
+		BlzFrameSetPoint(data.ChargesFrame, FRAMEPOINT_BOTTOMRIGHT, data.SelfFrame, FRAMEPOINT_BOTTOMRIGHT, 0,0)
 		BlzFrameSetText(data.ChargesFrameText, data.Charges)
 		BlzFrameSetPoint(data.ChargesFrameText, FRAMEPOINT_CENTER, data.ChargesFrame, FRAMEPOINT_CENTER, 0.,0.)
 		if HotKeyPos==3 then
@@ -1289,6 +1334,7 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 			end)
 			TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 				BlzFrameSetText(data.ChargesFrameText, data.Charges)
+				--print(GetHandleId(data.ChargesFrameText))
 			end)
 
 		end
@@ -1342,8 +1388,9 @@ function CreateVisualMarkerRadius (data,radius,hero,x,y,number)
 	end
 	-- circle_fill
 	local path="circ"
+	path="replaceabletextures\\selection\\rangeindicator"
 	if number==10 then
-		path="circle_fill"
+	--	path="circle_fill"
 	end
 
 	local CircleImage=CreateImage(path,radius,radius,radius,OutPoint,OutPoint,0,0,0,0,4)

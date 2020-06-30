@@ -99,7 +99,6 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 	--print(type)
 	if type=="active" then
 		--print("создана ативная кнопка")
-
 		local  ClickTrig = CreateTrigger()
 		BlzTriggerRegisterFrameEvent(ClickTrig, data.SelfFrame, FRAMEEVENT_CONTROL_CLICK)
 		TriggerAddAction(ClickTrig, function ()
@@ -112,25 +111,27 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 					mainData.FirePillarState=true
 					StartFirePillar(mainData)
 				end
-			else
-				--PauseFrameCD(data,true)
-				--AddSpeedToFrameCD(data,0.5)
-				--print("Способность ещё не перезарядилась, подождите "..data.CurrentCDTime.." сек.")
+				if pos==11 then -- старт кактусов
+					if CustomAbilityIsReady(mainData,data) and not mainData.StartDrawing then
+						EatingCactus(mainData)
+						mainData.StartDrawing=true
+						mainData.DestroyDrawing=false
+					end
+				end
 			end
 		end)
-	else
-	--	print("else")
 	end
 
-	if  mainData.CustomAbilities[HotKeyPos].MaxCharges then
+
+	if mainData.CustomAbilities[HotKeyPos].MaxCharges then
 		data.Charges=mainData.CustomAbilities[HotKeyPos].MaxCharges-50
 		--print(data.Charges)
 		data.ChargesFrame= BlzCreateFrameByType("BACKDROP", "Face",data.SelfFrame, "", 0)
 		data.ChargesFrameText = BlzCreateFrameByType("TEXT", "ButtonChargesText", data.ChargesFrame, "", 0)
-		BlzFrameSetTexture(data.ChargesFrame, "ChargesTexture.blp", 0, true)
-		BlzFrameSetSize(data.ChargesFrame, 0.015, 0.01)
+		BlzFrameSetTexture(data.ChargesFrame, "UI\\Widgets\\Console\\Human\\CommandButton\\human-button-lvls-overlay", 0, true)
+		BlzFrameSetSize(data.ChargesFrame, 0.02, 0.015)
 		--BlzFrameSetAbsPoint(data.ChargesFrame, FRAMEPOINT_CENTER,0.4+0.02 , 0.6-0.02)
-		BlzFrameSetPoint(data.ChargesFrame, FRAMEPOINT_BOTTOMRIGHT, data.SelfFrame, FRAMEPOINT_BOTTOMRIGHT, -0.001,0.001)
+		BlzFrameSetPoint(data.ChargesFrame, FRAMEPOINT_BOTTOMRIGHT, data.SelfFrame, FRAMEPOINT_BOTTOMRIGHT, 0,0)
 		BlzFrameSetText(data.ChargesFrameText, data.Charges)
 		BlzFrameSetPoint(data.ChargesFrameText, FRAMEPOINT_CENTER, data.ChargesFrame, FRAMEPOINT_CENTER, 0.,0.)
 		if HotKeyPos==3 then
@@ -141,6 +142,7 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 			end)
 			TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 				BlzFrameSetText(data.ChargesFrameText, data.Charges)
+				--print(GetHandleId(data.ChargesFrameText))
 			end)
 
 		end
@@ -194,8 +196,9 @@ function CreateVisualMarkerRadius (data,radius,hero,x,y,number)
 	end
 	-- circle_fill
 	local path="circ"
+	path="replaceabletextures\\selection\\rangeindicator"
 	if number==10 then
-		path="circle_fill"
+	--	path="circle_fill"
 	end
 
 	local CircleImage=CreateImage(path,radius,radius,radius,OutPoint,OutPoint,0,0,0,0,4)

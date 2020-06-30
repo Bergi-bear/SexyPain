@@ -13,11 +13,12 @@ function ChangeInterfaceToQuin(data)
 end
 
 function Hide10Buttons(data)
+
 	for i =0,11 do
+		BlzFrameSetSize(BlzGetFrameByName("CommandButton_"..i, 0),0.0001,0.0001) --убирает всё
 		if i~=1 then
 			if i~=2 then
-				--BlzFrameSetVisible(BlzGetFrameByName("CommandButton_"..i, 0), false)
-				BlzFrameSetSize(BlzGetFrameByName("CommandButton_"..i, 0),0.0001,0.0001)
+				--BlzFrameSetSize(BlzGetFrameByName("CommandButton_"..i, 0),0.0001,0.0001) -- оставляет холд и стоп
 			end
 		end
 

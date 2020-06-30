@@ -30,6 +30,19 @@ function KeyRegistration()
 				end
 			end
 		end
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
+			data.ReleaseRMB = true
+			if data.StartDrawing then
+				DestroyEatingCactus(data,data.FrameTable[11],false)
+				TimerStart(CreateTimer(), 0.001, false, function()
+					if IssueImmediateOrder(data.UnitHero,"stop") then
+						--print("stop?")
+					end
+				end)
+				--data.DestroyDrawing=true
+				--print("Нажал правую, отменяем маркер")
+			end
+		end
 	end)
 	local TrigDePressLMB = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -37,13 +50,43 @@ function KeyRegistration()
 	end
 
 	TriggerAddAction(TrigDePressLMB, function()
+		local pid = GetPlayerId(GetTriggerPlayer())
+		local data = HERO[pid]
 		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
-			local pid = GetPlayerId(GetTriggerPlayer())
-			local data = HERO[pid]
+
 			data.ReleaseLMB = false
+		end
+		if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
+			data.ReleaseRMB = false
 		end
 	end)
 
+
+	-----------------------------------------------------------------OSKEY_Q
+	local gg_trg_EventUpQ = CreateTrigger()
+	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
+		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpQ, Player(i), OSKEY_Q, 0, true)
+	end
+	TriggerAddAction(gg_trg_EventUpQ, function()
+		local pid = GetPlayerId(GetTriggerPlayer())
+		local data = HERO[pid]
+		if not data.ReleaseQ then
+			data.ReleaseQ = true
+
+			--data.MarkIsActivated=false
+			--print("Q is Pressed Mark Creation")
+			--MarkCreatorQ(data)
+		end
+	end)
+	local TrigDepressQ = CreateTrigger()
+	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
+		BlzTriggerRegisterPlayerKeyEvent(TrigDepressQ, Player(i), OSKEY_Q, 0, false)
+	end
+	TriggerAddAction(TrigDepressQ, function()
+		local pid = GetPlayerId(GetTriggerPlayer())
+		local data = HERO[pid]
+		data.ReleaseQ = false
+	end)
 	-----------------------------------------------------------------OSKEY_W --в это карте это якорь
 	local gg_trg_EventUpW = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -74,31 +117,6 @@ function KeyRegistration()
 		local data = HERO[pid]
 		data.ReleaseW = false
 	end)
-	-----------------------------------------------------------------OSKEY_Q
-	local gg_trg_EventUpQ = CreateTrigger()
-	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		BlzTriggerRegisterPlayerKeyEvent(gg_trg_EventUpQ, Player(i), OSKEY_Q, 0, true)
-	end
-	TriggerAddAction(gg_trg_EventUpQ, function()
-		local pid = GetPlayerId(GetTriggerPlayer())
-		local data = HERO[pid]
-		if not data.ReleaseQ then
-			data.ReleaseQ = true
-
-			--data.MarkIsActivated=false
-			--print("Q is Pressed Mark Creation")
-			--MarkCreatorQ(data)
-		end
-	end)
-	local TrigDepressQ = CreateTrigger()
-	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
-		BlzTriggerRegisterPlayerKeyEvent(TrigDepressQ, Player(i), OSKEY_Q, 0, false)
-	end
-	TriggerAddAction(TrigDepressQ, function()
-		local pid = GetPlayerId(GetTriggerPlayer())
-		local data = HERO[pid]
-		data.ReleaseQ = false
-	end)
 	-----------------------------------------------------------------OSKEY_E
 	local gg_trg_EventUpE = CreateTrigger()
 	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
@@ -110,16 +128,10 @@ function KeyRegistration()
 		if not data.ReleaseE then
 			data.ReleaseE = true
 			if CustomAbilityIsReady(data,data.FrameTable[11]) and not data.StartDrawing then
-				--StarFrameCooldown(data.FrameTable[11],10)
-				--data.FirePillarState=true
-				--StartFirePillar(data)
 				EatingCactus(data)
 				data.StartDrawing=true
 				data.DestroyDrawing=false
 			end
-			--data.MarkIsActivated=false
-			--print("Q is Pressed Mark Creation")
-			--MarkCreatorE(data)
 		end
 	end)
 	local TrigDepressE = CreateTrigger()
@@ -164,8 +176,11 @@ function KeyRegistration()
 	TriggerAddAction(gg_trg_EventUpESC, function()
 		local pid = GetPlayerId(GetTriggerPlayer())
 		local data = HERO[pid]
-		if not data.ReleaseE then
-			data.ReleaseE = true
+		if not data.ReleaseESC then
+			data.ReleaseESC = true
+			if data.StartDrawing then
+				DestroyEatingCactus(data,data.FrameTable[11],false)
+			end
 			--data.MarkIsActivated=false
 			--print("Q is Pressed Mark Creation")
 			data.MarkIsActivated = false
@@ -178,7 +193,7 @@ function KeyRegistration()
 	TriggerAddAction(TrigDepressESC, function()
 		local pid = GetPlayerId(GetTriggerPlayer())
 		local data = HERO[pid]
-		data.ReleaseE = false
+		data.ReleaseESC = false
 	end)
 	-----------------------------------------------------------------OSKEY_TAB
 	local gg_trg_EventUpTAB = CreateTrigger()

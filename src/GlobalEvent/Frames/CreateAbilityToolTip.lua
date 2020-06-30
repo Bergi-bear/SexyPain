@@ -13,6 +13,22 @@ function CreateAbilityToolTip(mainData,data)
 	BlzFrameSetText(title,mainData.CustomAbilities[data.HotKeyPos].Name)
 	BlzFrameSetText(description,mainData.CustomAbilities[data.HotKeyPos].Description)
 	BlzFrameSetVisible(data.ToolTip,false)
+	local k=0
+	if mainData.CustomAbilities[data.HotKeyPos].ManaCost then
+		BlzFrameSetText(title,mainData.CustomAbilities[data.HotKeyPos].Name.."\n    ".."|cffffff00"..mainData.CustomAbilities[data.HotKeyPos].ManaCost.."|r") -- |cffffff00TEXT|r
+		--print("способность имеет ману")
+		local res= BlzCreateFrameByType("BACKDROP", "Face",data.ToolTip, "", 0)
+		BlzFrameSetTexture(res, "UI\\Widgets\\tooltips\\Human\\tooltipmanaicon", 0, true)
+
+		BlzFrameSetSize(res, 0.01, 0.01)
+		BlzFrameSetPoint(res, FRAMEPOINT_TOPLEFT, data.ToolTip, FRAMEPOINT_TOPLEFT, 0.005,-0.017)
+		k=0.01
+	end
+	BlzFrameSetText(title,BlzFrameGetText(title).."\n ") --вставка сеператора
+	local separator=BlzCreateFrameByType("BACKDROP", "Face",data.ToolTip, "", 0)
+	BlzFrameSetTexture(separator, "UI\\Widgets\\tooltips\\Human\\horizontalseparator", 0, true)
+	BlzFrameSetSize(separator, 0.28, 1/16*0.01)
+	BlzFrameSetPoint(separator, FRAMEPOINT_TOPLEFT, data.ToolTip, FRAMEPOINT_TOPLEFT, 0.005,-0.02-k)
 	--print(mainData.CustomAbilities[data.HotKeyPos].Name)
 end
 function ShowAbilityTooltip (mainData,data,isShow)
@@ -28,7 +44,6 @@ end
 function HideAllToolTips(mainData)
 	--print("способности скрыты")
 	for i=1,12 do
-
 		local data=mainData.FrameTable[i]
 	BlzFrameSetVisible(data.ToolTip,false)
 	end

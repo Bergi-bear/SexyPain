@@ -56,56 +56,43 @@ function InitHEROTable()
 			FirePillarState=false,
 			StartDrawing=false,
 			DestroyDrawing=false,
+			effDrawing=nil,
+			DrawingTimer=nil,
 			CustomAbilities = { -- статичные данные, но менять можно и муи
 				[1] = {
 					Ready = true,
 					CD=10,
-					Name="Фазовый сдвиг",
-					Description="\nПри получении урона герой смещается между пространствами и избегает этого урона а также любого последующего в течении 0.5 сек. Атаки по герою уменьшают перезарядку способности на 1 секунду"
+					Name="Фазовый сдвиг".." (|cffffcc00".."Пассивная".."|r)",
+					Description="При получении урона герой смещается между пространствами и избегает этого урона а также любого последующего в течении 0.5 сек. Атаки по герою уменьшают перезарядку способности на 1 секунду",
 				},
 				[2] = {
 					Ready = true,
 					CD=15,
-					Name="Огненный столб",
-					Description="Выпускает поток огня впереди себя"
+					Name="Огненный столб".." (|cffffcc00".."W".."|r)",
+					Description="Выпускает поток огня впереди себя",
 				},
 				[3] = {
 					Ready = true,
 					CD=7,
-					Name="Поле кактусов",
+					Name="Поле кактусов".." (|cffffcc00".."E".."|r)",
 					Description="Сажает кактусы в указанной точке, сажайте кактусы по 1 или удерживайте левую кнопку мыши зажатой, для массовм посадки. Способность имеет 10 зарядов, перезарядка заряда - 7 секунд ",
-					MaxCharges=100
+					MaxCharges=100,
+					ManaCost=10,
 				},
 				R = {},
 				S = {},
 				D = {},
 				F = {}
 			},
-			FrameTable = {-- создание таблице пустыше
-				--[[SelfFrame = nil, -- Основной фрейм
-				IconFrame = nil, -- Его иконка
-				CdIndicatorFrame = nil, -- Фрейм перезарядки
-				ToolTip=nil, -- фрейм подскизки, общий
-				Number = i,
-				PosX = 0,
-				PosY = 0,
-				OnCD = false,
-				CurrentCDTime = 0,
-				Timer = nil,
-				PercentAmount = 0,
-				OnPaused = false,
-				Full = 0,
-				CurrentCD = 0,
-				MouseOnFrame = false,
-				HotKeyPos=0,
-				Charges=0,]]
-			},
+			FrameTable = {},
 			ReleaseQ=false,
 			ReleaseW=false,
 			ReleaseE=false,
 			ReleaseR=false,
 			ReleaseLMB=false,
 			ReleaseRMB=false,
+			ReleaseESC=false,
+			ReleaseTAB=false,
 		}
 	end
 end
