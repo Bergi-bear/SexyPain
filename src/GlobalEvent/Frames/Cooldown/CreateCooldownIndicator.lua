@@ -122,6 +122,30 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 	--	print("else")
 	end
 
+	if  mainData.CustomAbilities[HotKeyPos].MaxCharges then
+		data.Charges=mainData.CustomAbilities[HotKeyPos].MaxCharges-50
+		--print(data.Charges)
+		data.ChargesFrame= BlzCreateFrameByType("BACKDROP", "Face",data.SelfFrame, "", 0)
+		data.ChargesFrameText = BlzCreateFrameByType("TEXT", "ButtonChargesText", data.ChargesFrame, "", 0)
+		BlzFrameSetTexture(data.ChargesFrame, "ChargesTexture.blp", 0, true)
+		BlzFrameSetSize(data.ChargesFrame, 0.015, 0.01)
+		--BlzFrameSetAbsPoint(data.ChargesFrame, FRAMEPOINT_CENTER,0.4+0.02 , 0.6-0.02)
+		BlzFrameSetPoint(data.ChargesFrame, FRAMEPOINT_BOTTOMRIGHT, data.SelfFrame, FRAMEPOINT_BOTTOMRIGHT, -0.001,0.001)
+		BlzFrameSetText(data.ChargesFrameText, data.Charges)
+		BlzFrameSetPoint(data.ChargesFrameText, FRAMEPOINT_CENTER, data.ChargesFrame, FRAMEPOINT_CENTER, 0.,0.)
+		if HotKeyPos==3 then
+			TimerStart(CreateTimer(), 1, true, function()
+				if data.Charges<mainData.CustomAbilities[HotKeyPos].MaxCharges then
+					data.Charges=data.Charges+1
+				end
+			end)
+			TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+				BlzFrameSetText(data.ChargesFrameText, data.Charges)
+			end)
+
+		end
+	end
+
 	local  TrigMOUSE_ENTER = CreateTrigger()
 	BlzTriggerRegisterFrameEvent( TrigMOUSE_ENTER, data.SelfFrame, FRAMEEVENT_MOUSE_ENTER)
 	TriggerAddAction( TrigMOUSE_ENTER, function ()

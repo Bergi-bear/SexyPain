@@ -87,22 +87,14 @@ function PointContentDestructable (x,y,range,iskill,damage,hero)
 		local d=GetEnumDestructable()
 		if GetDestructableLife(d)>0 and unitZ<=GetTerrainZ(x,y)+50 then
 			content=true
-
 			if iskill then
 				if not IsDestructableInvulnerable(d) then
 					SetDestructableLife(d,GetDestructableLife(d)-damage)
 				end
-
-
 				if GetDestructableLife(d)>=1 then
 					SetDestructableAnimation(d,"Stand Hit")
 				else
-
 				end
-
-
-
-
 			end
 		else
 		end

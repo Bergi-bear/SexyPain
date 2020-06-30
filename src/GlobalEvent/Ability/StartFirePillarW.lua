@@ -23,5 +23,8 @@ function StartFirePillar(data)
 		else
 			DestroyTimer(GetExpiredTimer())
 		end
+		if not UnitAlive(hero) then -- и прочие услоия прерывания огнемёта
+			DestroyTimer(GetExpiredTimer())
+		end
 	end)
 end

@@ -54,6 +54,8 @@ function InitHEROTable()
 			IsMainHeroOnHit = false,
 			EvasionState=false,
 			FirePillarState=false,
+			StartDrawing=false,
+			DestroyDrawing=false,
 			CustomAbilities = { -- статичные данные, но менять можно и муи
 				[1] = {
 					Ready = true,
@@ -72,7 +74,7 @@ function InitHEROTable()
 					CD=7,
 					Name="Поле кактусов",
 					Description="Сажает кактусы в указанной точке, сажайте кактусы по 1 или удерживайте левую кнопку мыши зажатой, для массовм посадки. Способность имеет 10 зарядов, перезарядка заряда - 7 секунд ",
-					MaxCharges=10
+					MaxCharges=100
 				},
 				R = {},
 				S = {},
@@ -80,7 +82,7 @@ function InitHEROTable()
 				F = {}
 			},
 			FrameTable = {-- создание таблице пустыше
-				SelfFrame = nil, -- Основной фрейм
+				--[[SelfFrame = nil, -- Основной фрейм
 				IconFrame = nil, -- Его иконка
 				CdIndicatorFrame = nil, -- Фрейм перезарядки
 				ToolTip=nil, -- фрейм подскизки, общий
@@ -96,6 +98,7 @@ function InitHEROTable()
 				CurrentCD = 0,
 				MouseOnFrame = false,
 				HotKeyPos=0,
+				Charges=0,]]
 			},
 			ReleaseQ=false,
 			ReleaseW=false,
@@ -119,6 +122,8 @@ function InitMainFrameTable(data)
 			IconFrame = nil, -- Его иконка
 			CdIndicatorFrame = nil, -- Фрейм перезарядки
 			ToolTip=nil, -- фрейм подскизки, общий
+			ChargesFrame=nil,
+			ChargesFrameText=nil,
 			Number = i,
 			PosX = 0,
 			PosY = 0,
@@ -131,6 +136,7 @@ function InitMainFrameTable(data)
 			CurrentCD = 0,
 			MouseOnFrame = false,
 			HotKeyPos=0,
+			Charges=0,
 		}
 		local data2 = data.FrameTable[i]
 		k = k + 1

@@ -3,18 +3,114 @@
 --- Created by Bergi.
 --- DateTime: 29.06.2020 23:06
 ---
-cactusModel="Doodads\\Barrens\\Plants\\Cactus\\Cactus".."" --0-9
+cactusModel = "Doodads\\Barrens\\Plants\\Cactus\\Cactus" .. "" --0-9
 function EatingCactus(mainData)
-	print("курсор превращается в кактус")
-	local r=GetRandomInt(0,9)
-	local eff=AddSpecialEffect(cactusModel..r,GetPlayerMouseX[mainData.pid],GetPlayerMouseY[mainData.pid])
-	BlzSetSpecialEffectYaw(eff,math.rad(GetRandomReal(0,360)))
+	--print("курсор превращается в кактус")
+	local hero = mainData.UnitHero
+	local lastX, lastY = GetPlayerMouseX[mainData.pid], GetPlayerMouseY[mainData.pid]
+	local r = GetRandomInt(0, 9)
+	local eff = AddSpecialEffect(cactusModel .. r, lastX, lastY)
+	BlzSetSpecialEffectYaw(eff, math.rad(GetRandomReal(0, 360)))
+	local lastDistance = 0
+	local range=80
+	local angleCast = AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetPlayerMouseX[mainData.pid], GetPlayerMouseY[mainData.pid]) / bj_DEGTORAD
+	local curAngle = angleCast
+	local distance = DistanceBetweenXY(GetUnitX(hero), GetUnitY(hero), GetPlayerMouseX[mainData.pid], GetPlayerMouseY[mainData.pid])
+	local cutDistance = distance
+	local starDrawing=false
+	local data=mainData.FrameTable[11]
+	EnableSelect(false,false)
+	SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-		local x,y=GetPlayerMouseX[mainData.pid],GetPlayerMouseY[mainData.pid]
-		local z=GetTerrainZ(x,y)
-		BlzSetSpecialEffectPosition(eff,x,y,z)
-		if mainData.ReleaseLMB then
-			DestroyTimer(GetExpiredTimer())
+		distance = DistanceBetweenXY(GetUnitX(hero), GetUnitY(hero), GetPlayerMouseX[mainData.pid], GetPlayerMouseY[mainData.pid])
+		cutDistance = math.lerp(cutDistance, distance, TIMER_PERIOD * 16)
+		angleCast = AngleBetweenXY(GetUnitX(hero), GetUnitY(hero), GetPlayerMouseX[mainData.pid], GetPlayerMouseY[mainData.pid]) / bj_DEGTORAD
+		curAngle = lerpTheta(curAngle, angleCast, TIMER_PERIOD * 16)
+
+		local xp, yp = GetPlayerMouseX[mainData.pid], GetPlayerMouseY[mainData.pid]
+		local x, y = MoveXY(GetUnitX(hero), GetUnitY(hero), cutDistance, curAngle)
+		local distanceMove = DistanceBetweenXY(xp, yp, lastX, lastY)
+
+		if mainData.ReleaseLMB  then-- кнопка хажата
+			starDrawing=true
+			lastDistance = lastDistance + distanceMove
+		else
+			if starDrawing or mainData.DestroyDrawing then
+				--print("мышка отпущена")
+				mainData.StartDrawing=false
+				DestroyTimer(GetExpiredTimer())
+				BlzSetSpecialEffectPosition(eff, OutPoint, OutPoint, 0)
+				eff = nil
+				DestroyEffect(eff)
+				CreateCactus(mainData, x, y, r,curAngle)
+				EnableSelect(true,true)
+				SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
+				StarFrameCooldown(data,5)
+				return
+			else
+				--print()
+			end
 		end
+		if lastDistance > range then
+			--print(lastDistance)
+
+			DestroyTimer(GetExpiredTimer())
+			BlzSetSpecialEffectPosition(eff, OutPoint, OutPoint, 0)
+			eff = nil
+			DestroyEffect(eff)
+
+			if CustomAbilityIsReady(mainData,mainData.FrameTable[11]) then
+				EatingCactus(mainData)
+			end
+
+			if lastDistance>range*2 then
+				local int = R2I(lastDistance / range)
+				for i = 0, int do
+					local angle = AngleBetweenXY(lastX, lastY, xp, yp) / bj_DEGTORAD
+					--print(angle)
+					r = GetRandomInt(0, 9)
+					local nx, ny = MoveXY(lastX, lastY, range * i, angle)
+					--AddSpecialEffect(cactusModel..r,nx,ny)
+					CreateCactus(mainData, nx, ny, r,angle)
+					--print("рисуем недостающие кактусы "..i)
+				end
+			else
+				CreateCactus(mainData, x, y, r,curAngle)
+			end
+		end
+		lastX, lastY = x, y
+		local z = GetTerrainZ(x, y)
+		if eff then
+			BlzSetSpecialEffectPosition(eff, x, y, z)
+			BlzSetSpecialEffectYaw(eff, math.rad(curAngle))
+		end
+		if mainData.ReleaseLMB or not UnitAlive(mainData.UnitHero) then
+			--	DestroyTimer(GetExpiredTimer())
+		end
+	end)
+end
+
+function CreateCactus(mainData, x, y, r,angle)
+	local eff=nil
+	local timeLife = CreateTimer()
+	local data=mainData.FrameTable[11]
+	if data.Charges>0 then
+		data.Charges=data.Charges-1
+		eff = AddSpecialEffect(cactusModel .. r, x, y)
+		BlzSetSpecialEffectYaw(eff, math.rad(angle))
+	else
+		mainData.ReleaseLMB=false
+		mainData.DestroyDrawing=true
+		--print("Зарядов больше нет")
+	end
+		
+	TimerStart(timeLife, TIMER_PERIOD, true, function()
+		-- урон и отталкивание
+	end)
+	TimerStart(CreateTimer(), 10, false, function()
+		DestroyTimer(GetExpiredTimer())
+		DestroyTimer(timeLife)
+		BlzSetSpecialEffectPosition(eff, OutPoint, OutPoint, 0)
+		DestroyEffect(eff)
 	end)
 end

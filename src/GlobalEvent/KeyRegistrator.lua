@@ -56,11 +56,11 @@ function KeyRegistration()
 		if not data.ReleaseW then
 			data.ReleaseW = true
 			--print("кнопка W нажата, нужен огонь")
-			if not data.FrameTable[10].OnCD then --TODO реал реди
+			--if not data.FrameTable[10].OnCD then --TODO реал реди
+			if CustomAbilityIsReady(data,data.FrameTable[10]) then
 				StarFrameCooldown(data.FrameTable[10],10)
 				data.FirePillarState=true
 				StartFirePillar(data)
-
 			end
 			--MarkCreatorW(data)
 		end
@@ -109,12 +109,13 @@ function KeyRegistration()
 		local data = HERO[pid]
 		if not data.ReleaseE then
 			data.ReleaseE = true
-			if not data.FrameTable[11].OnCD then --
+			if CustomAbilityIsReady(data,data.FrameTable[11]) and not data.StartDrawing then
 				--StarFrameCooldown(data.FrameTable[11],10)
 				--data.FirePillarState=true
 				--StartFirePillar(data)
 				EatingCactus(data)
-
+				data.StartDrawing=true
+				data.DestroyDrawing=false
 			end
 			--data.MarkIsActivated=false
 			--print("Q is Pressed Mark Creation")
