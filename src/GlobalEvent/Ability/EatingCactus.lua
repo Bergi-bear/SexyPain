@@ -128,6 +128,24 @@ function CreateCactus(mainData, x, y, r,angle)
 
 	TimerStart(timeLife, TIMER_PERIOD, true, function()
 		-- урон и отталкивание
+		--Кактус пикает группу вокруг себя
+		local e=nil
+		GroupEnumUnitsInRange(perebor,x,y,80,nil)
+		while true do
+			e = FirstOfGroup(perebor)
+
+			if e == nil then break end
+			if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(mainData.UnitHero)) then
+				local angleBU=AngleBetweenXY(x,y,GetUnitXY(e))/ bj_DEGTORAD
+				if onForces[GetHandleId(e)] or onForces[GetHandleId(e)]==nil then
+					--print("урон?")
+					UnitDamageTarget( mainData.UnitHero, e, 20, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS )
+				end
+				UnitAddForceSimple(e,angleBU,30,180)
+			end
+			GroupRemoveUnit(perebor,e)
+		end
+
 	end)
 	TimerStart(CreateTimer(), 10, false, function()
 		DestroyTimer(GetExpiredTimer())
@@ -138,5 +156,8 @@ function CreateCactus(mainData, x, y, r,angle)
 end
 
 function IsPointCanCreatedCactus(mainData,x,y)
-	return not (IsTerrainPathable(x, y,PATHING_TYPE_WALKABILITY) or not IsVisibleToPlayer(x, y,GetOwningPlayer(mainData.UnitHero)))
+	return not (IsTerrainPathable(x, y,PATHING_TYPE_WALKABILITY)
+			or not IsVisibleToPlayer(x, y,GetOwningPlayer(mainData.UnitHero))
+			or DistanceBetweenXY(x,y,GetUnitXY(mainData.UnitHero))>=1000
+	)
 end

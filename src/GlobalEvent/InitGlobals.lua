@@ -27,7 +27,6 @@ do
 			InitMainFrameTable(HERO[0]) -- мульти создаётся здесь
 		end)
 	end
-
 end
 
 do
@@ -64,12 +63,14 @@ function InitHEROTable()
 					CD=10,
 					Name="Фазовый сдвиг".." (|cffffcc00".."Пассивная".."|r)",
 					Description="При получении урона герой смещается между пространствами и избегает этого урона а также любого последующего в течении 0.5 сек. Атаки по герою уменьшают перезарядку способности на 1 секунду",
+					SizeTooltip=7,
 				},
 				[2] = {
 					Ready = true,
 					CD=15,
 					Name="Огненный столб".." (|cffffcc00".."W".."|r)",
 					Description="Выпускает поток огня впереди себя",
+					SizeTooltip=4,
 				},
 				[3] = {
 					Ready = true,
@@ -78,9 +79,23 @@ function InitHEROTable()
 					Description="Сажает кактусы в указанной точке, сажайте кактусы по 1 или удерживайте левую кнопку мыши зажатой, для массовм посадки. Способность имеет 10 зарядов, перезарядка заряда - 7 секунд ",
 					MaxCharges=100,
 					ManaCost=10,
+					SizeTooltip=9,
 				},
-				R = {},
-				S = {},
+				[4] = {
+					Ready = true,
+					CD=7,
+					Name="Массовое вытягивание жизни".." (|cffffcc00".."R".."|r)",
+					Description="Отманиает у врагов жизни и передаёт их герою, герой неуязвим во время действия способности, пока испытывает нехватку здоровья и не может вытянуть больше здоровья чем у него недостаёт. Способность может быть отменена. Длительность: 5",
+					ManaCost=50,
+					SizeTooltip=10,
+				},
+				[5] = {
+					Ready = true,
+					CD=20,
+					Name="Критический удар".." (|cffffcc00".."Пассивная".."|r)",
+					Description="Когда способность готова, герой наносит увеличенный 5 кратный урон следующим любым источником урона, атаки с руки уменьшают перезарядку на 1 секунду",
+					SizeTooltip=7,
+				},
 				D = {},
 				F = {}
 			},
@@ -109,25 +124,24 @@ function InitMainFrameTable(data)
 			IconFrame = nil, -- Его иконка
 			CdIndicatorFrame = nil, -- Фрейм перезарядки
 			ToolTip=nil, -- фрейм подскизки, общий
-			ChargesFrame=nil,
-			ChargesFrameText=nil,
-			Number = i,
-			PosX = 0,
+			ChargesFrame=nil, -- фрейм зарядов
+			ChargesFrameText=nil, --Число зарядов
+			Number = i, -- номер фрейма 1-12 сверху вниз слева направо
+			PosX = 0, -- координаты на сетке
 			PosY = 0,
-			OnCD = false,
-			CurrentCDTime = 0,
-			Timer = nil,
-			PercentAmount = 0,
-			OnPaused = false,
-			Full = 0,
-			CurrentCD = 0,
-			MouseOnFrame = false,
-			HotKeyPos=0,
-			Charges=0,
+			OnCD = false, -- на кд
+			CurrentCDTime = 0,  --время кд
+			Timer = nil, --???
+			PercentAmount = 0, -- фрейм показывающий число процентов для перезарядки
+			OnPaused = false, -- кд на паузе
+			Full = 0, --???
+			CurrentCD = 0, -- не помню чем отличается от другого пункды
+			MouseOnFrame = false, -- мышка на кнопке
+			HotKeyPos=0, -- номер фрейма по порядку QWER
+			Charges=0, -- число зарядов
 		}
-		local data2 = data.FrameTable[i]
+		local data2 = data.FrameTable[i] --заполенеие ячеек, не трогать никогда
 		k = k + 1
-
 		if k == 5 then
 			k = 1
 			k2 = k2 + 1

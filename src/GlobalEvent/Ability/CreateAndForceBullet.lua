@@ -34,12 +34,13 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage,ma
 		local x, y, z = BlzGetLocalSpecialEffectX(bullet), BlzGetLocalSpecialEffectY(bullet), BlzGetLocalSpecialEffectZ(bullet)
 		local zGround = GetTerrainZ(MoveX(x, speed * 2, angleCurrent), MoveY(y, speed * 2, angleCurrent))
 		BlzSetSpecialEffectYaw(bullet, math.rad(angleCurrent))
-		if GetUnitTypeId(heroCurrent) == FourCC('e009') then
+		BlzSetSpecialEffectPosition(bullet, MoveX(x, speed, angleCurrent), MoveY(y, speed, angleCurrent), z - 2)
+		--[[if GetUnitTypeId(heroCurrent) == FourCC('e009') then
 			-- у горного великана тиника нет потери высоты
 			BlzSetSpecialEffectPosition(bullet, MoveX(x, speed, angleCurrent), MoveY(y, speed, angleCurrent), z)
 		else
 			BlzSetSpecialEffectPosition(bullet, MoveX(x, speed, angleCurrent), MoveY(y, speed, angleCurrent), z - 2)
-		end
+		end]]
 
 
 		--BlzSetSpecialEffectPosition(cloud,MoveX(x,speed/3,angle),MoveY(y,speed/3,angle),z-2)

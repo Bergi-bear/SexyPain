@@ -29,7 +29,11 @@ function StarFrameCooldown(data,cd)
 			data.Full=data.Full+data.PercentAmount
 			data.CurrentCDTime=data.CurrentCDTime-0.05
 		end
-		BlzFrameSetText(data.SelfFrame, string.format("%%02.1f",data.CurrentCDTime))
+		local textShowed=string.format("%%02.1f",data.CurrentCDTime)
+		if data.CurrentCDTime>=10 then
+			textShowed=R2I(data.CurrentCDTime)
+		end
+		BlzFrameSetText(data.SelfFrame,textShowed)
 		BlzFrameSetTexture(data.CdIndicatorFrame, "DDS512".."\\000"..Zero4(R2I(data.Full+data.PercentAmount)), 0, true)
 		if data.Full>frameCount-1 then
 			EndFrameCD(data)
@@ -118,13 +122,17 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 						mainData.DestroyDrawing=false
 					end
 				end
+				if pos==12 then -- старт отсоса
+					StarFrameCooldown(data,12)
+					print("запускаем функция отсасывания")
+				end --
 			end
 		end)
 	end
 
 
 	if mainData.CustomAbilities[HotKeyPos].MaxCharges then
-		data.Charges=mainData.CustomAbilities[HotKeyPos].MaxCharges-50
+		data.Charges=R2I(mainData.CustomAbilities[HotKeyPos].MaxCharges/2)
 		--print(data.Charges)
 		data.ChargesFrame= BlzCreateFrameByType("BACKDROP", "Face",data.SelfFrame, "", 0)
 		data.ChargesFrameText = BlzCreateFrameByType("TEXT", "ButtonChargesText", data.ChargesFrame, "", 0)
@@ -161,6 +169,12 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 		end
 		if data.Number==10 then--радиус огнемёта
 			CreateVisualMarkerRadius(data,800,HERO[pid].UnitHero,nil,nil,data.Number)
+		end
+		if data.Number==11 then--радиус сажания кустов
+			CreateVisualMarkerRadius(data,2000,HERO[pid].UnitHero,nil,nil,data.Number)
+		end
+		if data.Number==12 then--радиус отсоса
+			CreateVisualMarkerRadius(data,1000,HERO[pid].UnitHero,nil,nil,data.Number)
 		end
 	end)
 	local  TrigMOUSE_LEAVE = CreateTrigger()
@@ -217,17 +231,4 @@ function CreateVisualMarkerRadius (data,radius,hero,x,y,number)
 			DestroyTimer(GetExpiredTimer())
 		end
 	end)
-end
-
-function  UnitHaveReadyAbility(hero,abiID)
-	local isReady=false
-	if GetUnitAbilityLevel(hero,abiID)>0
-			and BlzGetUnitAbilityCooldownRemaining(hero,abiID)<=.01
-			and UnitAlive(hero)
-			and GetUnitState(hero,UNIT_STATE_MANA)>=BlzGetUnitAbilityManaCost(hero,abiID,GetUnitAbilityLevel(hero,abiID)-1)
-			and IsUnitSelected(hero,GetOwningPlayer(hero))
-	then
-		isReady=true
-	end
-	return isReady
 end

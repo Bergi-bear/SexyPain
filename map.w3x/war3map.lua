@@ -258,7 +258,6 @@ do
 			InitMainFrameTable(HERO[0]) -- мульти создаётся здесь
 		end)
 	end
-
 end
 
 do
@@ -295,12 +294,14 @@ function InitHEROTable()
 					CD=10,
 					Name="Фазовый сдвиг".." (|cffffcc00".."Пассивная".."|r)",
 					Description="При получении урона герой смещается между пространствами и избегает этого урона а также любого последующего в течении 0.5 сек. Атаки по герою уменьшают перезарядку способности на 1 секунду",
+					SizeTooltip=7,
 				},
 				[2] = {
 					Ready = true,
 					CD=15,
 					Name="Огненный столб".." (|cffffcc00".."W".."|r)",
 					Description="Выпускает поток огня впереди себя",
+					SizeTooltip=4,
 				},
 				[3] = {
 					Ready = true,
@@ -309,9 +310,23 @@ function InitHEROTable()
 					Description="Сажает кактусы в указанной точке, сажайте кактусы по 1 или удерживайте левую кнопку мыши зажатой, для массовм посадки. Способность имеет 10 зарядов, перезарядка заряда - 7 секунд ",
 					MaxCharges=100,
 					ManaCost=10,
+					SizeTooltip=9,
 				},
-				R = {},
-				S = {},
+				[4] = {
+					Ready = true,
+					CD=7,
+					Name="Массовое вытягивание жизни".." (|cffffcc00".."R".."|r)",
+					Description="Отманиает у врагов жизни и передаёт их герою, герой неуязвим во время действия способности, пока испытывает нехватку здоровья и не может вытянуть больше здоровья чем у него недостаёт. Способность может быть отменена. Длительность: 5",
+					ManaCost=50,
+					SizeTooltip=10,
+				},
+				[5] = {
+					Ready = true,
+					CD=20,
+					Name="Критический удар".." (|cffffcc00".."Пассивная".."|r)",
+					Description="Когда способность готова, герой наносит увеличенный 5 кратный урон следующим любым источником урона, атаки с руки уменьшают перезарядку на 1 секунду",
+					SizeTooltip=7,
+				},
 				D = {},
 				F = {}
 			},
@@ -340,25 +355,24 @@ function InitMainFrameTable(data)
 			IconFrame = nil, -- Его иконка
 			CdIndicatorFrame = nil, -- Фрейм перезарядки
 			ToolTip=nil, -- фрейм подскизки, общий
-			ChargesFrame=nil,
-			ChargesFrameText=nil,
-			Number = i,
-			PosX = 0,
+			ChargesFrame=nil, -- фрейм зарядов
+			ChargesFrameText=nil, --Число зарядов
+			Number = i, -- номер фрейма 1-12 сверху вниз слева направо
+			PosX = 0, -- координаты на сетке
 			PosY = 0,
-			OnCD = false,
-			CurrentCDTime = 0,
-			Timer = nil,
-			PercentAmount = 0,
-			OnPaused = false,
-			Full = 0,
-			CurrentCD = 0,
-			MouseOnFrame = false,
-			HotKeyPos=0,
-			Charges=0,
+			OnCD = false, -- на кд
+			CurrentCDTime = 0,  --время кд
+			Timer = nil, --???
+			PercentAmount = 0, -- фрейм показывающий число процентов для перезарядки
+			OnPaused = false, -- кд на паузе
+			Full = 0, --???
+			CurrentCD = 0, -- не помню чем отличается от другого пункды
+			MouseOnFrame = false, -- мышка на кнопке
+			HotKeyPos=0, -- номер фрейма по порядку QWER
+			Charges=0, -- число зарядов
 		}
-		local data2 = data.FrameTable[i]
+		local data2 = data.FrameTable[i] --заполенеие ячеек, не трогать никогда
 		k = k + 1
-
 		if k == 5 then
 			k = 1
 			k2 = k2 + 1
@@ -619,7 +633,9 @@ function InitSelectionRegister()
 				--CreateAbilityFrame(5)
 				CreateAbilityFrame(data,9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive",1)
 				CreateAbilityFrame(data,10,"ReplaceableTextures\\CommandButtons\\BTNFireForTheCannon", "active",2)
-				CreateAbilityFrame(data,11,nil, "active",3)
+				CreateAbilityFrame(data,11,"ReplaceableTextures\\CommandButtons\\BTNReplenishHealth", "active",3)
+				CreateAbilityFrame(data,12,"ReplaceableTextures\\CommandButtons\\BTNLifeDrain", "active",4)
+				CreateAbilityFrame(data,6,"ReplaceableTextures\\PassiveButtons\\PASBTNCriticalStrike", "passive",5)
 
 				--CreateAbilityFrame(data,9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive",1)
 				TimerStart(CreateTimer(), 0.01, true, function()
@@ -713,12 +729,13 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage,ma
 		local x, y, z = BlzGetLocalSpecialEffectX(bullet), BlzGetLocalSpecialEffectY(bullet), BlzGetLocalSpecialEffectZ(bullet)
 		local zGround = GetTerrainZ(MoveX(x, speed * 2, angleCurrent), MoveY(y, speed * 2, angleCurrent))
 		BlzSetSpecialEffectYaw(bullet, math.rad(angleCurrent))
-		if GetUnitTypeId(heroCurrent) == FourCC('e009') then
+		BlzSetSpecialEffectPosition(bullet, MoveX(x, speed, angleCurrent), MoveY(y, speed, angleCurrent), z - 2)
+		--[[if GetUnitTypeId(heroCurrent) == FourCC('e009') then
 			-- у горного великана тиника нет потери высоты
 			BlzSetSpecialEffectPosition(bullet, MoveX(x, speed, angleCurrent), MoveY(y, speed, angleCurrent), z)
 		else
 			BlzSetSpecialEffectPosition(bullet, MoveX(x, speed, angleCurrent), MoveY(y, speed, angleCurrent), z - 2)
-		end
+		end]]
 
 
 		--BlzSetSpecialEffectPosition(cloud,MoveX(x,speed/3,angle),MoveY(y,speed/3,angle),z-2)
@@ -918,6 +935,24 @@ function CreateCactus(mainData, x, y, r,angle)
 
 	TimerStart(timeLife, TIMER_PERIOD, true, function()
 		-- урон и отталкивание
+		--Кактус пикает группу вокруг себя
+		local e=nil
+		GroupEnumUnitsInRange(perebor,x,y,80,nil)
+		while true do
+			e = FirstOfGroup(perebor)
+
+			if e == nil then break end
+			if UnitAlive(e) and IsUnitEnemy(e,GetOwningPlayer(mainData.UnitHero)) then
+				local angleBU=AngleBetweenXY(x,y,GetUnitXY(e))/ bj_DEGTORAD
+				if onForces[GetHandleId(e)] or onForces[GetHandleId(e)]==nil then
+					print("урон?")
+					UnitDamageTarget( mainData.UnitHero, e, 100, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS )
+				end
+				UnitAddForceSimple(e,angleBU,30,180)
+			end
+			GroupRemoveUnit(perebor,e)
+		end
+
 	end)
 	TimerStart(CreateTimer(), 10, false, function()
 		DestroyTimer(GetExpiredTimer())
@@ -928,7 +963,10 @@ function CreateCactus(mainData, x, y, r,angle)
 end
 
 function IsPointCanCreatedCactus(mainData,x,y)
-	return not (IsTerrainPathable(x, y,PATHING_TYPE_WALKABILITY) or not IsVisibleToPlayer(x, y,GetOwningPlayer(mainData.UnitHero)))
+	return not (IsTerrainPathable(x, y,PATHING_TYPE_WALKABILITY)
+			or not IsVisibleToPlayer(x, y,GetOwningPlayer(mainData.UnitHero))
+			or DistanceBetweenXY(x,y,GetUnitXY(mainData.UnitHero))>=1000
+	)
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -1010,8 +1048,12 @@ end
 ---
 function CreateAbilityToolTip(mainData,data)
 	data.ToolTip=BlzCreateFrame("DemoBoxTooltip", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
-	BlzFrameSetSize(data.ToolTip,0.29,0.10)
-	BlzFrameSetAbsPoint(data.ToolTip,FRAMEPOINT_CENTER,0.655,0.25)
+	local size=mainData.CustomAbilities[data.HotKeyPos].SizeTooltip
+	BlzFrameSetSize(data.ToolTip,0.29,0.012*size)
+	--BlzFrameSetAbsPoint(data.ToolTip,FRAMEPOINT_CENTER,0.655,0.25)
+
+	BlzFrameSetPoint(data.ToolTip, FRAMEPOINT_BOTTOM, BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), FRAMEPOINT_BOTTOM, 0.25, 0.16)
+
 	local contaiter=BlzFrameGetChild(data.ToolTip,1)
 	local title=BlzFrameGetChild(contaiter,0)
 	local description=BlzFrameGetChild(contaiter,1)
@@ -1221,7 +1263,11 @@ function StarFrameCooldown(data,cd)
 			data.Full=data.Full+data.PercentAmount
 			data.CurrentCDTime=data.CurrentCDTime-0.05
 		end
-		BlzFrameSetText(data.SelfFrame, string.format("%02.1f",data.CurrentCDTime))
+		local textShowed=string.format("%02.1f",data.CurrentCDTime)
+		if data.CurrentCDTime>=10 then
+			textShowed=R2I(data.CurrentCDTime)
+		end
+		BlzFrameSetText(data.SelfFrame,textShowed)
 		BlzFrameSetTexture(data.CdIndicatorFrame, "DDS512".."\\000"..Zero4(R2I(data.Full+data.PercentAmount)), 0, true)
 		if data.Full>frameCount-1 then
 			EndFrameCD(data)
@@ -1310,13 +1356,17 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 						mainData.DestroyDrawing=false
 					end
 				end
+				if pos==12 then -- старт отсоса
+					StarFrameCooldown(data,12)
+					print("запускаем функция отсасывания")
+				end --
 			end
 		end)
 	end
 
 
 	if mainData.CustomAbilities[HotKeyPos].MaxCharges then
-		data.Charges=mainData.CustomAbilities[HotKeyPos].MaxCharges-50
+		data.Charges=R2I(mainData.CustomAbilities[HotKeyPos].MaxCharges/2)
 		--print(data.Charges)
 		data.ChargesFrame= BlzCreateFrameByType("BACKDROP", "Face",data.SelfFrame, "", 0)
 		data.ChargesFrameText = BlzCreateFrameByType("TEXT", "ButtonChargesText", data.ChargesFrame, "", 0)
@@ -1353,6 +1403,12 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 		end
 		if data.Number==10 then--радиус огнемёта
 			CreateVisualMarkerRadius(data,800,HERO[pid].UnitHero,nil,nil,data.Number)
+		end
+		if data.Number==11 then--радиус сажания кустов
+			CreateVisualMarkerRadius(data,2000,HERO[pid].UnitHero,nil,nil,data.Number)
+		end
+		if data.Number==12 then--радиус отсоса
+			CreateVisualMarkerRadius(data,1000,HERO[pid].UnitHero,nil,nil,data.Number)
 		end
 	end)
 	local  TrigMOUSE_LEAVE = CreateTrigger()
@@ -1411,17 +1467,136 @@ function CreateVisualMarkerRadius (data,radius,hero,x,y,number)
 	end)
 end
 
-function  UnitHaveReadyAbility(hero,abiID)
-	local isReady=false
-	if GetUnitAbilityLevel(hero,abiID)>0
-			and BlzGetUnitAbilityCooldownRemaining(hero,abiID)<=.01
-			and UnitAlive(hero)
-			and GetUnitState(hero,UNIT_STATE_MANA)>=BlzGetUnitAbilityManaCost(hero,abiID,GetUnitAbilityLevel(hero,abiID)-1)
-			and IsUnitSelected(hero,GetOwningPlayer(hero))
-	then
-		isReady=true
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 04.07.2020 2:23
+---
+Force2DTable={}
+function UnitAddForceVector2D(hero,speed,angle)
+	if not Force2DTable[GetHandleId(hero)] then
+		--	print("оглушен первый раз")
+		Force2DTable[GetHandleId(hero)]={
+			Time=0,
+			Timer=nil
+		}
 	end
-	return isReady
+	local data=Force2DTable[GetHandleId(hero)]
+
+	TimerStart(data.Timer, TIMER_PERIOD, true, function()
+
+	end)
+end
+
+--Старый кастрированный вариант
+onForces = {}
+function UnitAddForceSimple(hero, angle, speed, distance)
+	-- псевдо вектор использовать только для юнитов
+	local currentdistance = 0
+	if onForces[GetHandleId(hero)] == nil then
+		onForces[GetHandleId(hero)] = true
+	end
+	if not IsUnitType(hero, UNIT_TYPE_STRUCTURE) and onForces[GetHandleId(hero)]  then
+		onForces[GetHandleId(hero)]=false
+		TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+			currentdistance = currentdistance + speed
+			--print(currentdistance)
+			local x, y = GetUnitX(hero), GetUnitY(hero)
+			local newX, newY = MoveX(x, speed, angle), MoveY(y, speed, angle)
+
+			SetUnitPositionSmooth(hero, newX, newY)
+
+			if currentdistance >= distance then
+				--or (data.OnWater and data.OnTorrent==false)
+				--data.IsDisabled=false
+				--data.OnWater=false
+				DestroyTimer(GetExpiredTimer())
+				onForces[GetHandleId(hero)]=true
+				--print("stop cur="..currentdistance.." dist="..distance)
+			end
+		end)
+	end
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 03.06.2020 17:02
+---
+
+do --Инициализация
+	TimerStart(CreateTimer(), 0.1, false, function()
+		if BlzLoadTOCFile("SystemGeneric\\Main.toc") then
+		--	print("успех")
+		else
+			print("провал загрузки ток")
+		end
+	end)
+end
+
+
+function CallingBarCreate(u,cd,text)
+	if not text then text="Подготовка" end
+	local amount=5/cd
+	local full=0
+	local bar = BlzCreateSimpleFrame("MyFakeBar", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0)
+	BlzFrameSetAbsPoint(bar, FRAMEPOINT_CENTER, 0.4, 0.15)
+	BlzFrameSetValue(bar, 0)
+	BlzFrameSetTextSizeLimit(bar,1)
+
+	CallingBarCancelCond(u,bar)
+
+	if GetLocalPlayer()==GetOwningPlayer(u)  then -- хп бары, они точно в норме
+		BlzFrameSetVisible(bar,true)
+	end
+	BlzFrameSetTexture(bar, "Replaceabletextures\\Teamcolor\\Teamcolor0"..(GetConvertedPlayerId(GetOwningPlayer(u))-1)..".blp", 0, true)
+	BlzFrameSetTexture(BlzGetFrameByName("MyFakeBarBorder",0),"SystemGeneric\\MyBarBorder.blp", 0, true)
+	BlzFrameSetText(BlzGetFrameByName("MyFakeBarTitle",0), text)--‡ Сердце ™ щит
+
+	local lefttext = BlzGetFrameByName("MyFakeBarLeftText",0)
+	local righttext = BlzGetFrameByName("MyFakeBarRightText",0)
+	BlzFrameSetText(lefttext, "")
+	BlzFrameSetText(righttext, "")
+
+	TimerStart(CreateTimer(), 0.05, true, function()
+		full=full+amount
+		BlzFrameSetValue(bar, full)
+		--print(full)
+		if full>=100 then
+			--print("destroy")
+			CallingBarDestroy(u,bar)
+		end
+	end)
+	return bar
+end
+
+function CallingBarDestroy(hero,bar)
+	if UnitRemoveAbility(hero,FourCC('Abun')) then
+	--	print("атака возвращена")
+	end
+	DestroyTimer(GetExpiredTimer())
+	BlzDestroyFrame(bar)
+end
+
+function CallingBarCancelCond(hero,bar)
+	UnitAddAbility(hero,FourCC('Abun'))
+	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		CallingBarIsStatus(hero,bar)
+	end)
+end
+
+function CallingBarIsStatus(hero,bar)
+	local status=true
+	if IsUnitPaused(hero) or GetUnitCurrentOrder(hero)~=String2OrderIdBJ("")	then
+		if GetUnitCurrentOrder(hero)~=String2OrderIdBJ("doom") then
+			--print(OrderId2String(GetUnitCurrentOrder(hero)))
+			--print("Каст сбит")
+			UnitRemoveAbility(hero,FourCC('Abun'))
+			--DestroyTimer(GetExpiredTimer())
+			CallingBarDestroy(hero,bar)
+			status=false
+		end
+	end
+	return status
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -1852,6 +2027,129 @@ function FlyTextTagShieldXY(x,y, text, player)--™
 	local xr=GetRandomReal(-0.05,0,05)
 	return FlyTextTag(""..text, 0.018, x, y, 150, 128, 128, 128, 255, xr, 0.03, 1, 3, player)
 end
+do
+	Vector = {}
+	Vector.__index = Vector
+end
+
+
+function Vector:new(x, y, z)
+	local v = {x = x, y = y, z = z}
+	setmetatable(v, self)
+	return v
+end
+
+function Vector:copy()
+	return Vector:new(self.x, self.y, self.z)
+end
+
+function Vector:dot(other)
+	return self.x * other.x + self.y * other.y + self.z * other.z
+end
+
+function Vector:length()
+	return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
+end
+
+function Vector:length2d()
+	return math.sqrt(self.x * self.x + self.y * self.y)
+end
+
+function Vector:__mul(num)
+	return Vector:new(self.x * num, self.y * num, self.z * num)
+end
+
+function Vector:__div(num)
+	return Vector:new(self.x / num, self.y / num, self.z / num)
+end
+
+function Vector:__div(num)
+	return Vector:new(self.x / num, self.y / num, self.z / num)
+end
+
+function Vector:normalize(clone)
+	if clone then
+		return self / self:length()
+	end
+	local l = self:length()
+	self.x = self.x / l
+	self.y = self.y / l
+	self.z = self.z / l
+	return self
+end
+
+function Vector:angleBetween(other)
+	return math.acos(self:dot(other) / other:length() / self:length())
+end
+
+function Vector:yaw()
+	return math.atan(self.y, self.x)
+end
+
+function Vector:pitch()
+	return math.atan(self.z, self:length2d())
+end
+
+function CreateEffectLighting3D(x1, y1, z1, x2, y2, z2, step, effModel,length)
+	local vector = Vector:new(x2 - x1, y2 - y1, z2 - z1)
+	local normalized = vector:normalize(true)
+	local chainCount = math.floor(vector:length() / step)
+	local pitch = vector:pitch()
+	local yaw = vector:yaw()
+	local eff = {}
+	if not length then
+		length=chainCount
+	end
+
+	for i = 1, length do
+		if i<=chainCount then
+			eff[i] = AddSpecialEffect(effModel, 0, 0)
+			local v = normalized * (step * i)
+			BlzSetSpecialEffectPosition(eff[i], x1 + v.x, y1 + v.y, z1 + v.z)
+			BlzSetSpecialEffectPitch(eff[i], -pitch)
+			BlzSetSpecialEffectYaw(eff[i], yaw)
+		else
+			eff[i] = AddSpecialEffect(effModel, OutPoint, OutPoint)
+		end
+	end
+	return eff
+end
+
+function MoveEffectLighting3D(x1, y1, z1, x2, y2, z2, step, eff,length,isUnit)
+	local vector = Vector:new(x2 - x1, y2 - y1, z2 - z1)
+	local normalized = vector:normalize(true)
+	local chainCount = math.floor(vector:length() / step)
+	local pitch = vector:pitch()
+	local yaw = vector:yaw()
+	if not length then
+		length=#eff
+	end
+	if isUnit then
+		pitch=pitch-math.rad(90)
+	end
+
+	for i = 1, length do
+		local v = normalized * (step * i)
+		if i<=chainCount then
+			local z = z1 + v.z
+			BlzSetSpecialEffectPosition(eff[i], x1 + v.x, y1 + v.y, z)
+			BlzSetSpecialEffectPitch(eff[i], -pitch)
+			BlzSetSpecialEffectYaw(eff[i], yaw)
+		else
+			BlzSetSpecialEffectPosition(eff[i], OutPoint, OutPoint, 0)
+		end
+
+	end
+	return pitch
+end
+
+function DestroyEffectLighting3D(eff)
+	for i = 1, #eff do
+		BlzSetSpecialEffectPosition(eff[i], OutPoint, OutPoint, 0)
+		DestroyEffect(eff[i])
+	end
+end
+
 --CUSTOM_CODE
 function InitCustomPlayerSlots()
     SetPlayerStartLocation(Player(0), 0)

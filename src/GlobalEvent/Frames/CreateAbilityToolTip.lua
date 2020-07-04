@@ -5,8 +5,12 @@
 ---
 function CreateAbilityToolTip(mainData,data)
 	data.ToolTip=BlzCreateFrame("DemoBoxTooltip", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
-	BlzFrameSetSize(data.ToolTip,0.29,0.10)
-	BlzFrameSetAbsPoint(data.ToolTip,FRAMEPOINT_CENTER,0.655,0.25)
+	local size=mainData.CustomAbilities[data.HotKeyPos].SizeTooltip
+	BlzFrameSetSize(data.ToolTip,0.29,0.012*size)
+	--BlzFrameSetAbsPoint(data.ToolTip,FRAMEPOINT_CENTER,0.655,0.25)
+
+	BlzFrameSetPoint(data.ToolTip, FRAMEPOINT_BOTTOM, BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), FRAMEPOINT_BOTTOM, 0.25, 0.16)
+
 	local contaiter=BlzFrameGetChild(data.ToolTip,1)
 	local title=BlzFrameGetChild(contaiter,0)
 	local description=BlzFrameGetChild(contaiter,1)
