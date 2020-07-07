@@ -27,7 +27,23 @@ function OnPostDamage()
 			end
 		end
 	end
-	--любой получил урон
+
+	if IsUnitType(caster,UNIT_TYPE_HERO) then
+		local mainData=HERO[GetPlayerId(GetOwningPlayer(caster))]
+		local data=mainData.FrameTable[6] --пассивка крит
+		if damage>=10 then
+			if not data.OnCD then
+				StarFrameCooldown(data,mainData.CustomAbilities[5].CD) --
+				BlzFrameSetVisible(data.ReadyIndicator,false)
+				--print("критический удар")
+				FlyTextTagCriticalStrike(target,R2I(damage*5).."!",GetOwningPlayer(caster))
+				BlzSetEventDamage(damage*5)
+			else
+				AddSpeedToFrameCD(data,1)
+			end
+		end
+	end
+		--любой получил урон
 
 end
 

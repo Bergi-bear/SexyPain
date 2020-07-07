@@ -7,7 +7,7 @@
 do --Инициализация
 	TimerStart(CreateTimer(), 0.1, false, function()
 		if BlzLoadTOCFile("SystemGeneric\\Main.toc") then
-		--	print("успех")
+		print("успех")
 		else
 			print("провал загрузки ток")
 		end
@@ -15,7 +15,7 @@ do --Инициализация
 end
 
 
-function CallingBarCreate(u,cd,text)
+function CallingBarCreate(u,cd,text,support)
 	if not text then text="Подготовка" end
 	local amount=5/cd
 	local full=0
@@ -23,8 +23,9 @@ function CallingBarCreate(u,cd,text)
 	BlzFrameSetAbsPoint(bar, FRAMEPOINT_CENTER, 0.4, 0.15)
 	BlzFrameSetValue(bar, 0)
 	BlzFrameSetTextSizeLimit(bar,1)
-
-	CallingBarCancelCond(u,bar)
+	if support then
+		CallingBarCancelCond(u,bar)
+	end
 
 	if GetLocalPlayer()==GetOwningPlayer(u)  then -- хп бары, они точно в норме
 		BlzFrameSetVisible(bar,true)

@@ -22,8 +22,6 @@ do
 		--InitUnitDeath()-- инициализация смерти
 		--CreateGlue()
 		TimerStart(CreateTimer(), 0, false, function()
-
-			--Test12FrameAbility()-- фреймы
 			InitMainFrameTable(HERO[0]) -- мульти создаётся здесь
 		end)
 	end
@@ -135,7 +133,7 @@ function InitMainFrameTable(data)
 			PercentAmount = 0, -- фрейм показывающий число процентов для перезарядки
 			OnPaused = false, -- кд на паузе
 			Full = 0, --???
-			CurrentCD = 0, -- не помню чем отличается от другого пункды
+			CurrentCD = 0, -- Кд фрейма в момент его старта
 			MouseOnFrame = false, -- мышка на кнопке
 			HotKeyPos=0, -- номер фрейма по порядку QWER
 			Charges=0, -- число зарядов

@@ -70,11 +70,24 @@ function EndFrameCD(data)
 	BlzDestroyFrame(data.CdIndicatorFrame)
 	data.Full=0
 	data.OnCD=false
+	if data.Number==6 then
+		BlzFrameSetVisible(data.ReadyIndicator,true)
+	end
 end
 
 function AddSpeedToFrameCD(data,sec)
 	data.CurrentCDTime=data.CurrentCDTime-sec
-	data.Full=data.Full+(2*sec*data.CurrentCD*data.PercentAmount)
+	--10=2
+	--20=1
+	local k=1
+	if data.CurrentCD==20 then
+		k=1
+	end
+	if data.CurrentCD==10 then
+		k=2
+	end
+	data.Full=data.Full+(k*sec*data.CurrentCD*data.PercentAmount)
+	--print(data.Full)
 end
 
 
@@ -87,19 +100,24 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 		texture="ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn"
 	end
 
-	--data.SelfFrame = BlzCreateFrameByType("GLUETEXTBUTTON", "MyButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScriptDialogButton", 0)
-
 	data.SelfFrame = BlzCreateFrame("GlueWText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
-	--data.IconFrame = BlzCreateFrameByType("BACKDROP", "FaceButtonIcon", data.SelfFrame, "", 0)
 	data.IconFrame = BlzFrameGetChild(data.SelfFrame, 0)
 	BlzFrameSetTexture(data.IconFrame, texture, 0, true)
 	BlzFrameSetText(BlzFrameGetChild(data.SelfFrame, 2), "")
-	--BlzFrameSetText(data.SelfFrame, [[text]])
-
 	BlzFrameSetAllPoints(data.IconFrame, data.SelfFrame)
-	--BlzFrameSetTexture(data.IconFrame, texture, 0, true)
 	BlzFrameSetSize(data.SelfFrame,NextPoint,NextPoint)
 	BlzFrameSetAbsPoint(data.SelfFrame,FRAMEPOINT_CENTER,data.PosX,data.PosY)
+
+	--Индикатор готовности
+	if data.Number==6 then
+		data.ReadyIndicator = BlzCreateFrameByType("SPRITE", "justAName", data.SelfFrame, "WarCraftIIILogo", 0)
+		BlzFrameSetPoint(data.ReadyIndicator , FRAMEPOINT_BOTTOMLEFT, data.SelfFrame, FRAMEPOINT_BOTTOMLEFT, 0.02, 0.02)
+		BlzFrameSetSize(data.ReadyIndicator , 1., 1.)
+		BlzFrameSetScale(data.ReadyIndicator , 1.)
+		BlzFrameSetModel(data.ReadyIndicator , "SystemGeneric\\selecter3.mdx", 0)
+		BlzFrameSetVisible(data.ReadyIndicator,true) -- TODO добавить локального игрока и где то есть ещё второе место такое же
+	end
+
 	--print(type)
 	if type=="active" then
 		--print("создана ативная кнопка")
@@ -123,8 +141,10 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 					end
 				end
 				if pos==12 then -- старт отсоса
-					StarFrameCooldown(data,12)
-					print("запускаем функция отсасывания")
+					--StarFrameCooldown(data,12)
+					--print("запускаем функция отсасывания")
+					--StartLifeStealArea(mainData,data,500)
+					UnitUsedLifeStealAbility(mainData,data)
 				end --
 			end
 		end)
@@ -203,7 +223,7 @@ function HideAllCustomAbility(data,isHide)
 	end
 end
 
-function CreateVisualMarkerRadius (data,radius,hero,x,y,number)
+function CreateVisualMarkerRadius (data,radius,hero,x,y,number,timed)
 	if hero then
 		--print(GetUnitName(hero))
 		--x,y=GetUnitXY(hero)
@@ -215,7 +235,11 @@ function CreateVisualMarkerRadius (data,radius,hero,x,y,number)
 	--	path="circle_fill"
 	end
 
+
 	local CircleImage=CreateImage(path,radius,radius,radius,OutPoint,OutPoint,0,0,0,0,4)
+	if timed then
+		SetImageColor(CircleImage,255,0,0,255)
+	end
 	SetImageRenderAlways(CircleImage, true)
 	ShowImage(CircleImage,false)
 
@@ -225,10 +249,19 @@ function CreateVisualMarkerRadius (data,radius,hero,x,y,number)
 		if GetLocalPlayer()==GetOwningPlayer(hero) then
 			ShowImage(CircleImage,true)
 		end
-		if not data.MouseOnFrame then
+
+		if timed then
+			timed=timed-TIMER_PERIOD
+			if timed <=1 then
+				SetImageColor(CircleImage,255,0,0,math.floor(255*timed))
+			end
+		end
+
+		if (not data.MouseOnFrame and not timed) or (timed and timed<=0) then
 			SetImagePosition(CircleImage,OutPoint,OutPoint,0)
 			DestroyImage(CircleImage)
 			DestroyTimer(GetExpiredTimer())
 		end
 	end)
+	return CircleImage
 end

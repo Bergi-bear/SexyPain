@@ -72,7 +72,7 @@ function CreateAndForceBullet(hero, angle, speed, effectmodel, xs, ys, damage,ma
 			--StunArea(hero,x,y,CollisionRange,stunDuration)
 			UnitDamageArea(hero, damage, x, y, CollisionRange, ZBullet)
 			if DamagingUnit  and IsUnitType(hero,UNIT_TYPE_HERO) then
-				FlyTextTagCriticalStrike(DamagingUnit,R2I(damage).."!",GetOwningPlayer(hero))
+				-- тут был показ урона
 			end
 
 			DestroyEffect(bullet)

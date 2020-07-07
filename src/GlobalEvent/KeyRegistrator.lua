@@ -153,9 +153,10 @@ function KeyRegistration()
 		local data = HERO[pid]
 		if not data.ReleaseR then
 			data.ReleaseR = true
-			--data.MarkIsActivated=false
-			--print("Q is Pressed Mark Creation")
-			--MarkCreatorR(data)
+			if CustomAbilityIsReady(data,data.FrameTable[12]) and not data.StartDrawing then
+				--print("запуск высасывания черех хоткей")
+				UnitUsedLifeStealAbility(data,data.FrameTable[12])
+			end
 		end
 	end)
 	local TrigDepressR = CreateTrigger()
