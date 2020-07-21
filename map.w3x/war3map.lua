@@ -22,6 +22,7 @@ function CreateUnitsForPlayer0()
     u = BlzCreateUnitWithSkin(p, FourCC("ndqt"), -2029.0, -1575.4, 280.277, FourCC("ndqt"))
     u = BlzCreateUnitWithSkin(p, FourCC("ndqp"), -2345.8, -1338.1, 302.885, FourCC("ndqp"))
     u = BlzCreateUnitWithSkin(p, FourCC("ndqs"), -1943.5, -1887.5, 318.932, FourCC("ndqs"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -1959.8, -2480.4, 51.758, FourCC("hkni"))
 end
 
 function CreateUnitsForPlayer1()
@@ -216,14 +217,16 @@ function InitMouseMoveTrigger()
 		GetPlayerMouseY[i] = 0
 		--end
 	end
+
 	TriggerAddAction(MouseMoveTrigger, function()
 		--print("ismove")
 		--print("x="..BlzGetTriggerPlayerMouseX().." y="..BlzGetTriggerPlayerMouseY())
 		local FocusUnit=BlzGetMouseFocusUnit()
+		--print("фокус юнит"..GetUnitName(FocusUnit))
 		local id = GetPlayerId(GetTriggerPlayer())
 		if FocusUnit==HERO[id].UnitHero then
 			if not HERO[id].IsMainHeroOnHit then
-			--	print("Херо он фокус")
+				--	print("Херо он фокус")
 			end
 			HERO[id].IsMainHeroOnHit=true
 		else
@@ -232,13 +235,79 @@ function InitMouseMoveTrigger()
 			end
 			HERO[id].IsMainHeroOnHit=false
 		end
+
+
 		if BlzGetTriggerPlayerMouseX() ~= 0 then
-		GetPlayerMouseX[id] = BlzGetTriggerPlayerMouseX()
-		GetPlayerMouseY[id] = BlzGetTriggerPlayerMouseY()
+			GetPlayerMouseX[id] = BlzGetTriggerPlayerMouseX()
+			GetPlayerMouseY[id] = BlzGetTriggerPlayerMouseY()
 		end
 	end)
 end
 
+do
+	TimerStart(CreateTimer(), 0.1, false, function()
+		InitMouseMoveTriggerFocus()
+	end)
+end
+
+
+function InitMouseMoveTriggerFocus()
+	local MouseMoveTrigger = CreateTrigger()
+	for i = 0, bj_MAX_PLAYER_SLOTS - 1 do
+		local player = Player(i)
+		--if GetPlayerSlotState(player) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(player) == MAP_CONTROL_USER then
+		TriggerRegisterPlayerEvent(MouseMoveTrigger, player, EVENT_PLAYER_MOUSE_MOVE)
+	end
+	local FocusOnAnyUnit=false
+	local effShield=AddSpecialEffect("Shield",OutPoint,OutPoint)
+	local effAttack=AddSpecialEffect("Attack",OutPoint,OutPoint)
+	local tShield = CreateTextTag()
+	local tAttack = CreateTextTag()
+
+	SetTextTagPos(tShield, OutPoint, OutPoint, 0)
+	SetTextTagColor(tShield, 200, 200, 255, 200)
+	SetTextTagFadepoint(tShield, 2)
+	SetTextTagPermanent(tShield, false)
+	BlzSetSpecialEffectScale(effShield,0.3)
+	BlzSetSpecialEffectTimeScale(effShield,0)
+
+	SetTextTagPos(tAttack, OutPoint, OutPoint, 0)
+	SetTextTagColor(tAttack, 200, 200, 255, 200)
+	SetTextTagFadepoint(tAttack, 2)
+	SetTextTagPermanent(tAttack, false)
+	BlzSetSpecialEffectScale(effAttack,0.3)
+	BlzSetSpecialEffectTimeScale(effAttack,0)
+
+	TriggerAddAction(MouseMoveTrigger, function()
+		local FocusUnit=BlzGetMouseFocusUnit()
+		local id = GetPlayerId(GetTriggerPlayer())
+
+		if not FocusUnit then
+			--print("нет фокуса")
+			FocusOnAnyUnit=false
+			BlzSetSpecialEffectPosition(effShield,OutPoint,OutPoint,0)
+			BlzSetSpecialEffectPosition(effAttack,OutPoint,OutPoint,0)
+			SetTextTagPos(tShield, OutPoint, OutPoint, 0)
+			SetTextTagPos(tAttack, OutPoint, OutPoint, 0)
+		end
+		if FocusUnit then
+			--print("фокус на юните "..GetUnitName(FocusUnit))
+			FocusOnAnyUnit=true
+			local x,y=GetUnitXY(FocusUnit)
+			x=x+48
+			y=y-64
+			local z=GetTerrainZ(x,y)+25
+
+			BlzSetSpecialEffectPosition(effShield,x,y,z)
+			SetTextTagText(tShield, ""..math.floor(BlzGetUnitArmor(FocusUnit)), 0.024)
+			SetTextTagPos(tShield, x+32,y-24,z)
+
+			BlzSetSpecialEffectPosition(effAttack,x,y-48,z)
+			SetTextTagText(tAttack, ""..math.floor(BlzGetUnitBaseDamage(FocusUnit,0)), 0.024)
+			SetTextTagPos(tAttack, x+32,y-24-48,z)
+		end
+	end)
+end
 
 
 HeroID = FourCC("N000")
@@ -313,16 +382,16 @@ function InitHEROTable()
 				[2] = {
 					Ready = true,
 					CD=15,
-					Name="Огненный столб".." (|cffffcc00".."W".."|r)",
+					Name="Огненный столб".." (|cffffcc00".."W ‡ ‡".."|r)",
 					Description="Выпускает поток огня впереди себя",
 					SizeTooltip=4,
 				},
 				[3] = {
 					Ready = true,
-					CD=7,
+					CD=0.1,
 					Name="Поле кактусов".." (|cffffcc00".."E".."|r)",
 					Description="Сажает кактусы в указанной точке, сажайте кактусы по 1 или удерживайте левую кнопку мыши зажатой, для массовм посадки. Способность имеет 10 зарядов, перезарядка заряда - 7 секунд ",
-					MaxCharges=100,
+					MaxCharges=999,
 					ManaCost=10,
 					SizeTooltip=9,
 				},
@@ -837,7 +906,7 @@ function DestroyEatingCactus(mainData,data,WCD)
 	--CreateCactus(mainData, x, y, r,curAngle)
 	if WCD then
 		--print("отмена с кд")
-		StarFrameCooldown(data,5)
+		--StarFrameCooldown(data,0)
 		SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
 	else
 	--	print("одиночный клик?")
@@ -1071,10 +1140,6 @@ function UnitUsedLifeStealAbility(mainData,data)
 		CreateVisualMarkerRadius(data,1000,mainData.UnitHero,nil,nil,data.Number,0.5)
 	end
 end
-
-
-
-
 
 
 
@@ -1674,9 +1739,9 @@ end
 do --Инициализация
 	TimerStart(CreateTimer(), 0.1, false, function()
 		if BlzLoadTOCFile("SystemGeneric\\Main.toc") then
-		print("успех")
+		--print("успех")
 		else
-			print("провал загрузки ток")
+			print("провал загрузки ток кастом бара")
 		end
 	end)
 end
@@ -1726,7 +1791,7 @@ function CallingBarDestroy(hero,bar)
 	BlzDestroyFrame(bar)
 end
 
-function CallingBarCancelCond(hero,bar)
+function CallingBarCancelCond(hero,bar) --
 	UnitAddAbility(hero,FourCC('Abun'))
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		CallingBarIsStatus(hero,bar)
@@ -1735,12 +1800,11 @@ end
 
 function CallingBarIsStatus(hero,bar)
 	local status=true
-	if IsUnitPaused(hero) or GetUnitCurrentOrder(hero)~=String2OrderIdBJ("")	then
+	if IsUnitPaused(hero) or GetUnitCurrentOrder(hero)~=String2OrderIdBJ("")	then -- указываем списо условий который могус сбить каст
 		if GetUnitCurrentOrder(hero)~=String2OrderIdBJ("doom") then
 			--print(OrderId2String(GetUnitCurrentOrder(hero)))
 			--print("Каст сбит")
 			UnitRemoveAbility(hero,FourCC('Abun'))
-			--DestroyTimer(GetExpiredTimer())
 			CallingBarDestroy(hero,bar)
 			status=false
 		end

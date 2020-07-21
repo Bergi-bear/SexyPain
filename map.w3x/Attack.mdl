@@ -1,0 +1,124 @@
+//Modified with MdlVis.
+Version {
+	FormatVersion 800,
+}
+Model "RoarTarget" {
+	NumGeosets 1,
+	NumBones 1,
+	BlendTime 150,
+	MinimumExtent { -25.1099, -24.776, -9.59717 },
+	MaximumExtent { 25.1034, 25.4373, 40.6161 },
+}
+Sequences 2 {
+	Anim "Stand" {
+		Interval { 0, 633 },
+		MinimumExtent { -25.1099, -24.776, -9.59717 },
+		MaximumExtent { 25.1034, 25.4373, 40.6161 },
+		BoundsRadius 29.2717,
+	}
+	Anim "Death" {
+		Interval { 667, 1033 },
+		NonLooping,
+		MinimumExtent { -25.1099, -24.776, -9.59717 },
+		MaximumExtent { 25.1034, 25.4373, 40.6161 },
+		BoundsRadius 29.3739,
+	}
+}
+GlobalSequences 1 {
+	Duration 333,
+}
+Textures 1 {
+	Bitmap {
+		Image "ui\widgets\console\human\infocard-neutral-attack-melee.blp",
+	}
+}
+Materials 1 {
+	Material {
+		Layer {
+			FilterMode AddAlpha,
+			Unshaded,
+			Unfogged,
+			static TextureID 0,
+			Alpha 2 {
+				Bezier,
+				667: 1,
+					InTan 1.00253,
+					OutTan 0.972222,
+				1033: 0,
+					InTan 0.638889,
+					OutTan 0,
+			}
+		}
+	}
+}
+Geoset {
+	Vertices 4 {
+		{ -0.003, -48.13499, 48.46588 },
+		{ -0.003, -48.13499, -48.46588 },
+		{ -0.003, 48.79639, 48.46588 },
+		{ -0.003, 48.79639, -48.46588 },
+	}
+	Normals 4 {
+		{ 1, 0, 0 },
+		{ 1, 0, 0 },
+		{ 1, 0, 0 },
+		{ 1, 0, 0 },
+	}
+	TVertices 4 {
+		{ 0.1168314, 0.06577782 },
+		{ 0.1168314, 0.800837 },
+		{ 0.7821164, 0.07244709 },
+		{ 0.7821164, 0.8075063 },
+	}
+	VertexGroup {
+		0,
+		0,
+		0,
+		0,
+	}
+	Faces 1 6 {
+		Triangles {
+			{ 0, 1, 2, 3, 2, 1 },
+		}
+	}
+	Groups 1 1 {
+		Matrices { 0 },
+	}
+	MinimumExtent { -0.003000000026, -48.13499, -48.46588 },
+	MaximumExtent { -0.003000000026, 48.79639, 48.46588 },
+	BoundsRadius 137.08194,
+	Anim {
+		MinimumExtent { -0.003000000026, -48.13499069, -48.46588135 },
+		MaximumExtent { -0.003, 48.79639, 48.46588 },
+		BoundsRadius 137.0819,
+	}
+	Anim {
+		MinimumExtent { -0.003000000026, -48.13499069, -48.46588135 },
+		MaximumExtent { -0.003, 48.79639, 48.46588 },
+		BoundsRadius 137.0819,
+	}
+	MaterialID 0,
+	SelectionGroup 0,
+}
+Bone "plane01" {
+	ObjectId 0,
+	Billboarded,
+	GeosetId 0,
+	GeosetAnimId None,
+	Scaling 3 {
+		Bezier,
+		GlobalSeqId 0,
+		0: { 1, 1, 1 },
+			InTan { 0, 0, 0 },
+			OutTan { 1.13413, 1.13413, 1.13413 },
+		167: { 1.17, 1.17, 1.17 },
+			InTan { 1.17, 1.17, 1.17 },
+			OutTan { 1.17, 1.17, 1.17 },
+		333: { 1, 1, 1 },
+			InTan { 1.13413, 1.13413, 1.13413 },
+			OutTan { 0, 0, 0 },
+	}
+}
+PivotPoints 1 {
+	{ -0.00320944, 0.330666, 15.5095 },
+}

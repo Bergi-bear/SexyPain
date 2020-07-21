@@ -7,9 +7,9 @@
 do --Инициализация
 	TimerStart(CreateTimer(), 0.1, false, function()
 		if BlzLoadTOCFile("SystemGeneric\\Main.toc") then
-		print("успех")
+		--print("успех")
 		else
-			print("провал загрузки ток")
+			print("провал загрузки ток кастом бара")
 		end
 	end)
 end
@@ -59,7 +59,7 @@ function CallingBarDestroy(hero,bar)
 	BlzDestroyFrame(bar)
 end
 
-function CallingBarCancelCond(hero,bar)
+function CallingBarCancelCond(hero,bar) --
 	UnitAddAbility(hero,FourCC('Abun'))
 	TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
 		CallingBarIsStatus(hero,bar)
@@ -68,12 +68,11 @@ end
 
 function CallingBarIsStatus(hero,bar)
 	local status=true
-	if IsUnitPaused(hero) or GetUnitCurrentOrder(hero)~=String2OrderIdBJ("")	then
+	if IsUnitPaused(hero) or GetUnitCurrentOrder(hero)~=String2OrderIdBJ("")	then -- указываем списо условий который могус сбить каст
 		if GetUnitCurrentOrder(hero)~=String2OrderIdBJ("doom") then
 			--print(OrderId2String(GetUnitCurrentOrder(hero)))
 			--print("Каст сбит")
 			UnitRemoveAbility(hero,FourCC('Abun'))
-			--DestroyTimer(GetExpiredTimer())
 			CallingBarDestroy(hero,bar)
 			status=false
 		end

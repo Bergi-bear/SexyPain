@@ -16,14 +16,16 @@ function InitMouseMoveTrigger()
 		GetPlayerMouseY[i] = 0
 		--end
 	end
+
 	TriggerAddAction(MouseMoveTrigger, function()
 		--print("ismove")
 		--print("x="..BlzGetTriggerPlayerMouseX().." y="..BlzGetTriggerPlayerMouseY())
 		local FocusUnit=BlzGetMouseFocusUnit()
+		--print("фокус юнит"..GetUnitName(FocusUnit))
 		local id = GetPlayerId(GetTriggerPlayer())
 		if FocusUnit==HERO[id].UnitHero then
 			if not HERO[id].IsMainHeroOnHit then
-			--	print("Херо он фокус")
+				--	print("Херо он фокус")
 			end
 			HERO[id].IsMainHeroOnHit=true
 		else
@@ -32,11 +34,11 @@ function InitMouseMoveTrigger()
 			end
 			HERO[id].IsMainHeroOnHit=false
 		end
+
+
 		if BlzGetTriggerPlayerMouseX() ~= 0 then
-		GetPlayerMouseX[id] = BlzGetTriggerPlayerMouseX()
-		GetPlayerMouseY[id] = BlzGetTriggerPlayerMouseY()
+			GetPlayerMouseX[id] = BlzGetTriggerPlayerMouseX()
+			GetPlayerMouseY[id] = BlzGetTriggerPlayerMouseY()
 		end
 	end)
 end
-
-

@@ -15,7 +15,7 @@ function DestroyEatingCactus(mainData,data,WCD)
 	--CreateCactus(mainData, x, y, r,curAngle)
 	if WCD then
 		--print("отмена с кд")
-		StarFrameCooldown(data,5)
+		--StarFrameCooldown(data,0)
 		SelectUnitForPlayerSingle(hero,GetOwningPlayer(hero))
 	else
 	--	print("одиночный клик?")
