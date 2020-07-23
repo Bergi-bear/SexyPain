@@ -23,7 +23,6 @@ function CreateAbilityToolTip(mainData,data)
 		--print("способность имеет ману")
 		local res= BlzCreateFrameByType("BACKDROP", "Face",data.ToolTip, "", 0)
 		BlzFrameSetTexture(res, "UI\\Widgets\\tooltips\\Human\\tooltipmanaicon", 0, true)
-
 		BlzFrameSetSize(res, 0.01, 0.01)
 		BlzFrameSetPoint(res, FRAMEPOINT_TOPLEFT, data.ToolTip, FRAMEPOINT_TOPLEFT, 0.005,-0.017)
 		k=0.01
@@ -34,6 +33,18 @@ function CreateAbilityToolTip(mainData,data)
 	BlzFrameSetSize(separator, 0.28, 1/16*0.01)
 	BlzFrameSetPoint(separator, FRAMEPOINT_TOPLEFT, data.ToolTip, FRAMEPOINT_TOPLEFT, 0.005,-0.02-k)
 	--print(mainData.CustomAbilities[data.HotKeyPos].Name)
+	--Динамическо обновление
+	if mainData.CustomAbilities[data.HotKeyPos].Updatable then --Обновление текста в тултипах
+		TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+			local NativeString=mainData.CustomAbilities[data.HotKeyPos].Description
+			NativeString =string.gsub(NativeString,'ms',math.floor(GetUnitMoveSpeed(mainData.UnitHero)))
+			NativeString =string.gsub(NativeString,'ar',math.floor(BlzGetUnitWeaponRealField(mainData.UnitHero,UNIT_WEAPON_RF_ATTACK_RANGE,0)))
+			NativeString =string.gsub(NativeString,'ap',math.floor(BlzGetUnitBaseDamage(mainData.UnitHero,0)))
+			NativeString =string.gsub(NativeString,'as',BlzGetUnitAttackCooldown(mainData.UnitHero,0))
+			BlzFrameSetText(description,NativeString)
+		end)
+	end
+
 end
 function ShowAbilityTooltip (mainData,data,isShow)
 	if isShow then

@@ -94,6 +94,38 @@ function InitHEROTable()
 					Description="Когда способность готова, герой наносит увеличенный 5 кратный урон следующим любым источником урона, атаки с руки уменьшают перезарядку на 1 секунду",
 					SizeTooltip=7,
 				},
+				[6] = {
+					Ready = true,
+					CD=20,
+					Name="Движение".." (|cffffcc00".."ПКМ".."|r)",
+					Description="Отдаёт юниту приказ движения в указанную точку, со скорость ".."|cffffcc00".."ms".."|r",
+					SizeTooltip=5,
+					Updatable=true
+				},
+				[7] = {
+					Ready = true,
+					CD=20,
+					Name="Стоп".." (|cffffcc00".."S".."|r)",
+					Description="Прерывает все текущие действия",
+					SizeTooltip=4,
+					Updatable=true
+				},
+				[8] = {
+					Ready = true,
+					CD=20,
+					Name="Удерживать позицию".." (|cffffcc00".."H".."|r)",
+					Description="Закрепляет текущую позицию как постоянную, но юнит может продолжать атаковать врагов в зоне дальности атаки ".."|cffffcc00".."ar".."|r",
+					SizeTooltip=6,
+					Updatable=true
+				},
+				[9] = {
+					Ready = true,
+					CD=20,
+					Name="Атака".." (|cffffcc00".."A".."|r)",
+					Description="Атакует указанное существо или первое существо, что попадётся на пути. Сила атаки: ap, Скорость атаки: as",
+					SizeTooltip=6,
+					Updatable=true
+				},
 				D = {},
 				F = {}
 			},

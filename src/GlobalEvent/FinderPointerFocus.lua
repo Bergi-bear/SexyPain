@@ -22,14 +22,14 @@ function InitMouseMoveTriggerFocus()
 	SetTextTagPos(tShield, OutPoint, OutPoint, 0)
 	SetTextTagColor(tShield, 200, 200, 255, 200)
 	SetTextTagFadepoint(tShield, 2)
-	SetTextTagPermanent(tShield, false)
+	SetTextTagPermanent(tShield, true)
 	BlzSetSpecialEffectScale(effShield,0.3)
 	BlzSetSpecialEffectTimeScale(effShield,0)
 
 	SetTextTagPos(tAttack, OutPoint, OutPoint, 0)
 	SetTextTagColor(tAttack, 200, 200, 255, 200)
 	SetTextTagFadepoint(tAttack, 2)
-	SetTextTagPermanent(tAttack, false)
+	SetTextTagPermanent(tAttack, true)
 	BlzSetSpecialEffectScale(effAttack,0.3)
 	BlzSetSpecialEffectTimeScale(effAttack,0)
 
@@ -63,4 +63,3 @@ function InitMouseMoveTriggerFocus()
 		end
 	end)
 end
-

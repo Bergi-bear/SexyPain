@@ -254,6 +254,11 @@ function InitSelectionRegister()
 				CreateAbilityFrame(data,12,"ReplaceableTextures\\CommandButtons\\BTNLifeDrain", "active",4)
 				CreateAbilityFrame(data,6,"ReplaceableTextures\\PassiveButtons\\PASBTNCriticalStrike", "passive",5)
 
+				CreateAbilityFrame(data,1,"ReplaceableTextures\\CommandButtons\\btnmove", "active",6) --move
+				CreateAbilityFrame(data,2,"ReplaceableTextures\\CommandButtons\\btnstop", "active",7)
+				CreateAbilityFrame(data,3,"ReplaceableTextures\\CommandButtons\\btnholdposition", "active",8)
+				CreateAbilityFrame(data,4,"ReplaceableTextures\\CommandButtons\\btnattack", "active",9)
+
 				--CreateAbilityFrame(data,9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive",1)
 				TimerStart(CreateTimer(), 0.01, true, function()
 					local u = GetMainSelectedUnit(GetSelectedUnitIndex())
@@ -267,6 +272,7 @@ function InitSelectionRegister()
 						end
 					end
 				end)
+
 			end
 			if not data.IsInterface then
 				--print("SetInterfaceToQuinOfPaint")
