@@ -35,7 +35,7 @@ function CreateAbilityToolTip(mainData,data)
 	--print(mainData.CustomAbilities[data.HotKeyPos].Name)
 	--Динамическо обновление
 	if mainData.CustomAbilities[data.HotKeyPos].Updatable then --Обновление текста в тултипах
-		TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		TimerStart(CreateTimer(), TIMER_PERIOD, true, function() --TODO сделать всё на 1 таймере, а не это вот всё
 			local NativeString=mainData.CustomAbilities[data.HotKeyPos].Description
 			NativeString =string.gsub(NativeString,'ms',math.floor(GetUnitMoveSpeed(mainData.UnitHero)))
 			NativeString =string.gsub(NativeString,'ar',math.floor(BlzGetUnitWeaponRealField(mainData.UnitHero,UNIT_WEAPON_RF_ATTACK_RANGE,0)))

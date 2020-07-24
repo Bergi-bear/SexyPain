@@ -1295,7 +1295,7 @@ function CreateAbilityToolTip(mainData,data)
 	--print(mainData.CustomAbilities[data.HotKeyPos].Name)
 	--Динамическо обновление
 	if mainData.CustomAbilities[data.HotKeyPos].Updatable then --Обновление текста в тултипах
-		TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+		TimerStart(CreateTimer(), TIMER_PERIOD, true, function() --TODO сделать всё на 1 таймере, а не это вот всё
 			local NativeString=mainData.CustomAbilities[data.HotKeyPos].Description
 			NativeString =string.gsub(NativeString,'ms',math.floor(GetUnitMoveSpeed(mainData.UnitHero)))
 			NativeString =string.gsub(NativeString,'ar',math.floor(BlzGetUnitWeaponRealField(mainData.UnitHero,UNIT_WEAPON_RF_ATTACK_RANGE,0)))
@@ -1631,9 +1631,11 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 	end
 
 	--print(type)
-	if type=="active" then
+	if type=="active" then -- События кликов по кнопке
 		--print("создана ативная кнопка")
 		local  ClickTrig = CreateTrigger()
+		BlzFrameSetEnable(BlzGetTriggerFrame(), false)
+		BlzFrameSetEnable(BlzGetTriggerFrame(), true)
 		BlzTriggerRegisterFrameEvent(ClickTrig, data.SelfFrame, FRAMEEVENT_CONTROL_CLICK)
 		TriggerAddAction(ClickTrig, function ()
 			--print("Нажата кнопка "..pos)
@@ -1658,6 +1660,24 @@ function CreateAbilityFrame(mainData,pos,texture,type,HotKeyPos) -- позици
 					--StartLifeStealArea(mainData,data,500)
 					UnitUsedLifeStealAbility(mainData,data)
 				end --
+				local p=GetOwningPlayer(mainData.UnitHero)
+				if pos==1 then
+					print("Клик по move")
+					IssueImmediateOrderById(mainData.UnitHero,851976)
+					ForceUIKeyBJ(p,"Esc")
+					ForceUIKeyBJ(p,"M")
+				elseif pos==2 then
+					print("Клик по stop")
+					IssueImmediateOrder(mainData.UnitHero,"stop")
+				elseif pos==3 then
+					print("Клик по hold")
+					IssueImmediateOrder(mainData.UnitHero,"holdposition")
+				elseif pos==4 then
+					print("Клик по attack")
+					IssueImmediateOrderById(mainData.UnitHero,851976)
+					ForceUIKeyBJ(p,"Esc")
+					ForceUIKeyBJ(p,"A")
+				end
 			end
 		end)
 	end
