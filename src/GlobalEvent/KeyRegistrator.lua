@@ -247,6 +247,9 @@ function InitSelectionRegister()
 		if IsUnitType(hero, UNIT_TYPE_HERO) and GetOwningPlayer(hero) == GetTriggerPlayer() and GetUnitTypeId(hero) == HeroID then
 			if not data.UnitHero then --первый выбор героя
 				data.UnitHero = hero
+				AddQuest(hero,0,0,"Доберитесь до указанной точки")
+				--BlzSetUnitIntegerField(hero,UNIT_IF_MOVE_TYPE,1)
+				--print(" смена типа движения ")
 				--CreateAbilityFrame(5)
 				CreateAbilityFrame(data,9,"ReplaceableTextures\\PassiveButtons\\PASBTNEvasion", "passive",1)
 				CreateAbilityFrame(data,10,"ReplaceableTextures\\CommandButtons\\BTNFireForTheCannon", "active",2)

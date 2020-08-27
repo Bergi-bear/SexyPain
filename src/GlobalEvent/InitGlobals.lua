@@ -23,6 +23,7 @@ do
 		--CreateGlue()
 		TimerStart(CreateTimer(), 0, false, function()
 			InitMainFrameTable(HERO[0]) -- мульти создаётся здесь
+
 		end)
 	end
 end
